@@ -9,7 +9,7 @@ export default function Video() {
     const [startTime, setStartTime] = useState('0')
     const [endTime, setEndTime] = useState('')
 
-    const handleVideoTimes = (e) => {
+    const handleVideoTimes: YouTubeProps['onStateChange'] = (e) => {
         const duration = e.target.getDuration()
     }
     const handleURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
