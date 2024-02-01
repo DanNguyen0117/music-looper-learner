@@ -47,6 +47,13 @@
   margin-top: 30px;
 }
 
+.slider-container {
+  position: relative;
+  margin-top: 30px;
+  width: 640px;
+  height: 10px;
+}
+
 .slide-track {
   width: 100%;
   height: 5px;
