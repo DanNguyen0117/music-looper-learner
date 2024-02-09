@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useRef} from 'react'
 import Youtube, { YouTubeProps } from 'react-youtube'
 import Slider, { SliderProps } from 'rc-slider'
 import './Video.css'
@@ -22,11 +22,7 @@ export default function Video() {
     const [startTime, setStartTime] = useState(0)
     const [endTime, setEndTime] = useState(0)
     const [sliderValues, setSliderValues] = useState([0,100])
-    const [displayTime, setDisplayTime] = useState('hi')
-    
-    useEffect(() => {
-        updateStartEndDisplayTimes(startTime, endTime)
-    }, [startTime, endTime])
+    const [displayTime, setDisplayTime] = useState('Loading...')
 
     const updateStartEndDisplayTimes = (start: number, end: number) => {
         setStartTime(start)
@@ -47,6 +43,7 @@ export default function Video() {
     const handleSliderValues = (e: number | number[]) => {
         const values: number[] = Array.isArray(e) ? e : [e]
         setSliderValues(values)
+        
         console.log(values)
     }
 
@@ -88,7 +85,7 @@ export default function Video() {
         height: '390',
         width: '670',
         playerVars: {
-            autoplay: 0,
+            autoplay: 1,
         },
     };
 
