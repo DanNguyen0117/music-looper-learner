@@ -1,5 +1,3 @@
-import React, {useState} from 'react'
-import YouTube, {YouTubeProps} from 'react-youtube'
 import Video from './Video'
 
 import './App.css'

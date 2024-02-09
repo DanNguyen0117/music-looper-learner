@@ -1,14 +1,13 @@
 import { useState, useEffect} from 'react'
 import Youtube, { YouTubeProps } from 'react-youtube'
 import Slider, { SliderProps } from 'rc-slider'
-import ReactSlider from 'react-slider'
 import './Video.css'
 import 'rc-slider/assets/index.css';
 
 function secondsToHMS(seconds: number) {
     const hours = seconds > 3600 ? Math.floor(seconds / 3600) : null
     const minutes = hours ? Math.floor((seconds % 3600) / 60): Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    const remainingSeconds = Math.round(seconds % 60);
 
     // Format the result
     const formattedTime = (hours ? hours + ":" : "") + (minutes < 10 ? "0" : "") + minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
@@ -22,8 +21,18 @@ export default function Video() {
     const [videoCode, setVideoCode] = useState('')
     const [startTime, setStartTime] = useState(0)
     const [endTime, setEndTime] = useState(0)
-    const [sliderValues, setSliderValues] = useState([0,0])
-    const [displayTime, setDisplayTime] = useState('')
+    const [sliderValues, setSliderValues] = useState([0,100])
+    const [displayTime, setDisplayTime] = useState('hi')
+    
+    useEffect(() => {
+        updateStartEndDisplayTimes(startTime, endTime)
+    }, [startTime, endTime])
+
+    const updateStartEndDisplayTimes = (start: number, end: number) => {
+        setStartTime(start)
+        setEndTime(end)
+        handleDisplayTime()
+    }
 
     const handleDisplayTime = () => {
         const displayStartTime = secondsToHMS(startTime)
@@ -31,8 +40,14 @@ export default function Video() {
         setDisplayTime(String(displayStartTime) + ' - ' + String(displayEndTime))
     }
 
-    const handleVideoTimes: SliderProps['onChange'] = (e) => {
-        console.log(e.valueOf(), e.toString(), e.toLocaleString())
+    /**
+     * 
+     * SLIDER FUNCTIONS
+     */
+    const handleSliderValues = (e: number | number[]) => {
+        const values: number[] = Array.isArray(e) ? e : [e]
+        setSliderValues(values)
+        console.log(values)
     }
 
     const handleURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,23 +67,27 @@ export default function Video() {
         }
     }
 
+    const onPlayerStateChange: YouTubeProps['onStateChange'] = (e) => {
+        const duration = e.target.getDuration()
+        console.log("state change", duration)
+        updateStartEndDisplayTimes(0, duration)
+        setSliderValues([startTime, endTime])
+    }
+
     const onPlayerReady: YouTubeProps['onReady'] = (e) => {
         console.log("onplayerready")
         // access to player in all event handlers via event.target
         e.target.pauseVideo()
         const duration = e.target.getDuration()
-        setStartTime(() => 0)
-        setEndTime(() => duration)
-        handleDisplayTime()
-        console.log(startTime)
-        console.log(secondsToHMS(endTime))
+        console.log("ready:", duration)
+        updateStartEndDisplayTimes(0, duration)
+        setSliderValues([startTime, endTime])
     }
 
     const opts: YouTubeProps['opts'] = {
         height: '390',
-        width: '640',
+        width: '670',
         playerVars: {
-            // https://developers.google.com/youtube/player_parameters
             autoplay: 0,
         },
     };
@@ -76,7 +95,7 @@ export default function Video() {
     return (
         <div className='wrapper'>
             <h1 className='form-group title' style={{ marginBottom: '20px' }}>Music Looper Learner</h1>
-            <form className='form-group form' onSubmit={e => handleYoutubeSubmit(e)}>
+            <form className='form-group form' onSubmit={handleYoutubeSubmit}>
                 <input
                     className='form-control'
                     type='text'
@@ -92,45 +111,28 @@ export default function Video() {
             {errorMessage && <div className='error-msg'>{errorMessage}</div>}
             <br></br>
             {videoCode ? 
-            <Youtube
-                style={{ marginBottom: '10px' }}
-                videoId={videoCode}
-                opts={opts}
-                onReady={onPlayerReady}
-            />
-                : <div>Video will appear once URL is uploaded</div>}
-
-            {/* <div className='loop-slider-container'>
-                <div className='slide-track'></div>
-                    <input type='range' min={startTime} max={endTime} defaultValue={startTime} />
-                    <input type='range' min={startTime} max={endTime} defaultValue={endTime} />
-                <br></br>
-                <div>{displayTime}</div>
-            </div> */}
-            <div className='slider-container'>
-                {/* <Slider range defaultValue={[0,100]} allowCross={false}/> */}
-                <Slider 
-                    range 
-                    min={startTime}
-                    max={endTime || 100}
-                    defaultValue={sliderValues}
-                    allowCross={false}
-                    onChange={handleVideoTimes}
+            <>
+                <Youtube
+                    style={{ marginBottom: '10px' }}
+                    videoId={videoCode}
+                    opts={opts}
+                    onReady={onPlayerReady}
+                    onStateChange={onPlayerStateChange}
                 />
-                <div>{displayTime}</div>
-                <br></br>
-                <ReactSlider
-                    className="horizontal-slider"
-                    thumbClassName="example-thumb"
-                    trackClassName="example-track"
-                    defaultValue={[0, 100]}
-                    ariaLabel={['Lower thumb', 'Upper thumb']}
-                    ariaValuetext={state => `Thumb value ${state.valueNow}`}
-                    renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-                    pearling
-                    minDistance={10}
-                />
-            </div>
+                <div className='slider-container'>
+                    <Slider 
+                        range 
+                        min={startTime}
+                        max={endTime || 100}
+                        defaultValue={sliderValues}
+                        value={sliderValues}
+                        allowCross={false}
+                        onChange={handleSliderValues}
+                    />
+                    <div>{displayTime}</div>
+                </div>
+            </>
+                : <div>Video will appear once URL is uploaded</div>}           
         </div>
     )
 }
