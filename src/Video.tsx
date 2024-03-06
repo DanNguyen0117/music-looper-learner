@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef} from 'react'
-import Youtube, { YouTubeProps } from 'react-youtube'
+import Youtube, { YouTubeProps, YouTubePlayer } from 'react-youtube'
 import Slider, { SliderProps } from 'rc-slider'
 import './Video.css'
-import 'rc-slider/assets/index.css';
+import 'rc-slider/assets/index.css'
 
 function secondsToHMS(seconds: number) {
     const hours = seconds > 3600 ? Math.floor(seconds / 3600) : null
-    const minutes = hours ? Math.floor((seconds % 3600) / 60): Math.floor(seconds / 60);
-    const remainingSeconds = Math.round(seconds % 60);
+    const minutes = hours ? Math.floor((seconds % 3600) / 60): Math.floor(seconds / 60)
+    const remainingSeconds = Math.round(seconds % 60)
 
     // Format the result
-    const formattedTime = (hours ? hours + ":" : "") + (minutes < 10 ? "0" : "") + minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+    const formattedTime = (hours ? hours + ":" : "") + (minutes < 10 ? "0" : "") + minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds
 
-    return formattedTime;
+    return formattedTime
 }
 
 export default function Video() {
@@ -22,29 +22,36 @@ export default function Video() {
     const [startTime, setStartTime] = useState(0)
     const [endTime, setEndTime] = useState(0)
     const [sliderValues, setSliderValues] = useState([0,100])
-    const [displayTime, setDisplayTime] = useState('Loading...')
 
-    const updateStartEndDisplayTimes = (start: number, end: number) => {
-        setStartTime(start)
-        setEndTime(end)
-        handleDisplayTime()
-    }
-
-    const handleDisplayTime = () => {
-        const displayStartTime = secondsToHMS(startTime)
-        const displayEndTime = secondsToHMS(endTime)
-        setDisplayTime(String(displayStartTime) + ' - ' + String(displayEndTime))
-    }
+    const player = useRef<YouTubePlayer>()
+    
+    /**
+     * Display time methods
+     * 
+     */
+    // const updateStartEndDisplayTimes = (start: number, end: number) => {
+    //     setStartTime(start)
+    //     setEndTime(end)
+    //     handleDisplayTime()
+    // }
 
     /**
+     * Slider methods
      * 
-     * SLIDER FUNCTIONS
      */
-    const handleSliderValues = (e: number | number[]) => {
-        const values: number[] = Array.isArray(e) ? e : [e]
-        setSliderValues(values)
-        
-        console.log(values)
+
+    const handleSeekAhead = (times: number | number[]) => {
+        times = Array.isArray(times) ? times : [times]
+        player.current.seekTo(times[0], true)
+        player.current.playVideo()
+    }
+
+    const handleSliderValues = (times: number | number[]) => {
+        times = Array.isArray(times) ? times : [times]
+        setSliderValues(times)
+        player.current.seekTo(times[0], false)
+
+        console.log("handleSliderValues (nostate): ", times)
     }
 
     const handleURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +59,10 @@ export default function Video() {
         setErrorMessage('')
     }
 
+    /**
+     * Upload button handle
+     * 
+     */
     const handleYoutubeSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?/
@@ -64,21 +75,25 @@ export default function Video() {
         }
     }
 
-    const onPlayerStateChange: YouTubeProps['onStateChange'] = (e) => {
-        const duration = e.target.getDuration()
-        console.log("state change", duration)
-        updateStartEndDisplayTimes(0, duration)
-        setSliderValues([startTime, endTime])
-    }
+    /**
+     * React-Youtube player handles
+     * 
+     */
+    // const onStateChange: YouTubeProps['onStateChange'] = () => {
+    //     console.log("state change", startTime, endTime)
+    //     updateStartEndDisplayTimes(startTime, endTime)
+    //     setSliderValues([startTime, endTime])
+    // }
 
-    const onPlayerReady: YouTubeProps['onReady'] = (e) => {
-        console.log("onplayerready")
+    const onReady: YouTubeProps['onReady'] = (e) => {
+        console.log("onready")
         // access to player in all event handlers via event.target
+
+        player.current = e.target
         e.target.pauseVideo()
-        const duration = e.target.getDuration()
-        console.log("ready:", duration)
-        updateStartEndDisplayTimes(0, duration)
-        setSliderValues([startTime, endTime])
+        setStartTime(0)
+        setEndTime(e.target.getDuration())
+        setSliderValues([0, e.target.getDuration()])
     }
 
     const opts: YouTubeProps['opts'] = {
@@ -113,8 +128,8 @@ export default function Video() {
                     style={{ marginBottom: '10px' }}
                     videoId={videoCode}
                     opts={opts}
-                    onReady={onPlayerReady}
-                    onStateChange={onPlayerStateChange}
+                    onReady={onReady}
+                    // onStateChange={onStateChange}
                 />
                 <div className='slider-container'>
                     <Slider 
@@ -125,8 +140,10 @@ export default function Video() {
                         value={sliderValues}
                         allowCross={false}
                         onChange={handleSliderValues}
+                        onChangeComplete={handleSeekAhead}
                     />
-                    <div>{displayTime}</div>
+                    <div>{secondsToHMS(sliderValues[0])} - {secondsToHMS(sliderValues[1])} </div>
+                    <div>{secondsToHMS(startTime)} :: {secondsToHMS(endTime)}</div>
                 </div>
             </>
                 : <div>Video will appear once URL is uploaded</div>}           
