@@ -26,14 +26,22 @@ export default function Video() {
     const player = useRef<YouTubePlayer>()
     
     /**
-     * Display time methods
+     * Loop methods
      * 
      */
-    // const updateStartEndDisplayTimes = (start: number, end: number) => {
-    //     setStartTime(start)
-    //     setEndTime(end)
-    //     handleDisplayTime()
-    // }
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (player.current && player.current.getCurrentTime() >= sliderValues[1]) {
+                console.log("looping!")
+                player.current.seekTo(sliderValues[0], true)
+                player.current.playVideo()
+            }
+        }, 100)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [sliderValues])
 
     /**
      * Slider methods
