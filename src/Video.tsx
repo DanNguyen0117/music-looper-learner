@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef} from 'react'
 import Youtube, { YouTubeProps, YouTubePlayer } from 'react-youtube'
 import Slider, { SliderProps } from 'rc-slider'
 import './Video.css'
@@ -15,6 +15,16 @@ function secondsToHMS(seconds: number) {
     return formattedTime
 }
 
+/**
+ * Sample video urls:
+ * All The Things You Are - Chet Baker. https://www.youtube.com/watch?v=ngFdSR_aqdI
+ * Clair De Lune - Debussy (Rousseau). https://www.youtube.com/watch?v=WNcsUNKlAKw
+ */
+const sampleVideos = [
+    "WNcsUNKlAKw",
+    "ngFdSR_aqdI",
+
+]
 export default function Video() {
     const [videoURL, setVideoURL] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
@@ -22,8 +32,11 @@ export default function Video() {
     const [startTime, setStartTime] = useState(0)
     const [endTime, setEndTime] = useState(0)
     const [sliderValues, setSliderValues] = useState([0,100])
+    const [sampleVideoIndex, setSampleVideoIndex] = useState(0)
 
     const player = useRef<YouTubePlayer>()
+
+    const VIDEO_K = 49                      // constant used for 16*k width and 9*k height (16:9 ratio)
     
     /**
      * Loop methods
@@ -63,6 +76,7 @@ export default function Video() {
     }
 
     const handleURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
         setVideoURL(e.target.value)
         setErrorMessage('')
     }
@@ -71,7 +85,7 @@ export default function Video() {
      * Upload button handle
      * 
      */
-    const handleYoutubeSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleYoutubeSubmit = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLElement>) => {
         e.preventDefault()
         const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?/
         if (youtubeRegex.test(videoURL)) {
@@ -84,29 +98,33 @@ export default function Video() {
     }
 
     /**
+     * Sample video button handle
+     * 
+     */
+    const handleSampleVideo = () => {
+        setVideoCode(sampleVideos[sampleVideoIndex])
+        setSampleVideoIndex(index => index == sampleVideos.length-1 ? 0 : index + 1)
+        setErrorMessage('')
+    } 
+
+    /**
      * React-Youtube player handles
      * 
      */
-    // const onStateChange: YouTubeProps['onStateChange'] = () => {
-    //     console.log("state change", startTime, endTime)
-    //     updateStartEndDisplayTimes(startTime, endTime)
-    //     setSliderValues([startTime, endTime])
-    // }
-
     const onReady: YouTubeProps['onReady'] = (e) => {
         console.log("onready")
         // access to player in all event handlers via event.target
 
         player.current = e.target
-        e.target.pauseVideo()
+        // e.target.pauseVideo()
         setStartTime(0)
         setEndTime(e.target.getDuration())
         setSliderValues([0, e.target.getDuration()])
     }
 
     const opts: YouTubeProps['opts'] = {
-        height: '390',
-        width: '670',
+        height: String(9 * VIDEO_K),
+        width: String(16 * VIDEO_K),
         playerVars: {
             autoplay: 1,
         },
@@ -114,21 +132,22 @@ export default function Video() {
 
     return (
         <div className='wrapper'>
-            <h1 className='form-group title' style={{ marginBottom: '20px' }}>Music Looper Learner</h1>
-            <form className='form-group form' onSubmit={handleYoutubeSubmit}>
+            <h1 className='form-group title' style={{ marginBottom: '20px'}}>Music Looper Learner</h1>
+            <form className='form-group form' onSubmit={handleYoutubeSubmit} style={{marginBottom: '12px', width: '55%'}}>
                 <input
                     className='form-control'
                     type='text'
-                    style={{ marginRight: '10px' }}
+                    style={{ marginRight: '10px'}}
                     value={videoURL}
                     placeholder='Enter YouTube URL'
                     onChange={e => handleURLChange(e)}
                 />
-                <button type='submit' className='btn btn-success btn-md'>
-                    Upload
-                </button>
-            </form>
-            {errorMessage && <div className='error-msg'>{errorMessage}</div>}
+            </form>     
+            <div className='button-container' style={{marginBottom: '10px'}}>
+                <button type='submit' className='btn btn-success btn-md' onClick={handleYoutubeSubmit}>Upload</button>
+                <button className='btn btn-primary' onClick={handleSampleVideo}>{videoCode === '' ? "Try Sample Video" : "Try Another Video"}</button>
+            </div>
+            {errorMessage ? <div className='error-msg'>{errorMessage}</div> : <div style={{height: '21px'}}></div>}
             <br></br>
             {videoCode ? 
             <>
@@ -137,9 +156,8 @@ export default function Video() {
                     videoId={videoCode}
                     opts={opts}
                     onReady={onReady}
-                    // onStateChange={onStateChange}
                 />
-                <div className='slider-container'>
+                <div className='slider-container' style={{width: `${16 * VIDEO_K - 25}px`}}>
                     <Slider 
                         range 
                         min={startTime}
