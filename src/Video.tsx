@@ -36,7 +36,7 @@ export default function Video() {
                 player.current.seekTo(sliderValues[0], true)
                 player.current.playVideo()
             }
-        }, 100)
+        }, 50)
 
         return () => {
             clearInterval(interval)
@@ -143,15 +143,14 @@ export default function Video() {
                     <Slider 
                         range 
                         min={startTime}
-                        max={endTime || 100}
+                        max={endTime}
                         defaultValue={sliderValues}
                         value={sliderValues}
                         allowCross={false}
                         onChange={handleSliderValues}
                         onChangeComplete={handleSeekAhead}
                     />
-                    <div>{secondsToHMS(sliderValues[0])} - {secondsToHMS(sliderValues[1])} </div>
-                    <div>{secondsToHMS(startTime)} :: {secondsToHMS(endTime)}</div>
+                    <div style={{textAlign: "center"}}>{secondsToHMS(sliderValues[0])} - {secondsToHMS(sliderValues[1])} </div>
                 </div>
             </>
                 : <div>Video will appear once URL is uploaded</div>}           
