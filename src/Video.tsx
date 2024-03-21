@@ -17,12 +17,14 @@ function secondsToHMS(seconds: number) {
 
 /**
  * Sample video urls:
- * All The Things You Are - Chet Baker. https://www.youtube.com/watch?v=ngFdSR_aqdI
  * Clair De Lune - Debussy (Rousseau). https://www.youtube.com/watch?v=WNcsUNKlAKw
+ * All The Things You Are - Chet Baker. https://www.youtube.com/watch?v=ngFdSR_aqdI
+ * piano jazz improvisation. https://www.youtube.com/watch?v=QBzHqW4V3lA
  */
 const sampleVideos = [
     "WNcsUNKlAKw",
     "ngFdSR_aqdI",
+    "QBzHqW4V3lA",
 
 ]
 export default function Video() {
