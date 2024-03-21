@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef} from 'react'
 import Youtube, { YouTubeProps, YouTubePlayer } from 'react-youtube'
 import Slider from 'rc-slider'
+import StartEndTimers from './components/StartEndTimers'
 import './Video.css'
 import 'rc-slider/assets/index.css'
 
@@ -171,6 +172,7 @@ export default function Video() {
                         onChangeComplete={handleSeekAhead}
                     />
                     <div style={{textAlign: "center"}}>{secondsToHMS(sliderValues[0])} - {secondsToHMS(sliderValues[1])} </div>
+                    <StartEndTimers sliderValues={sliderValues} />
                 </div>
             </>
                 : <div>Video will appear once URL is uploaded</div>}           
