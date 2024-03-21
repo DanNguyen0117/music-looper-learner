@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef} from 'react'
 import Youtube, { YouTubeProps, YouTubePlayer } from 'react-youtube'
-import Slider, { SliderProps } from 'rc-slider'
+import Slider from 'rc-slider'
 import './Video.css'
 import 'rc-slider/assets/index.css'
 
