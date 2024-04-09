@@ -36,6 +36,7 @@ export default function Video() {
     const [endTime, setEndTime] = useState(0)
     const [sliderValues, setSliderValues] = useState([0,100])
     const [sampleVideoIndex, setSampleVideoIndex] = useState(0)
+    const [toggleLoop, setToggleLoop] = useState(true)
 
     const player = useRef<YouTubePlayer>()
 
@@ -47,8 +48,8 @@ export default function Video() {
      */
     useEffect(() => {
         const interval = setInterval(() => {
-            if (player.current && player.current.getCurrentTime() >= sliderValues[1]) {
-                console.log("looping!")
+            if (toggleLoop && player.current && player.current.getCurrentTime() >= sliderValues[1]) {
+                console.log("looping!", toggleLoop)
                 player.current.seekTo(sliderValues[0], true)
                 player.current.playVideo()
             }
@@ -57,7 +58,7 @@ export default function Video() {
         return () => {
             clearInterval(interval)
         }
-    }, [sliderValues])
+    }, [sliderValues, toggleLoop])
 
     /**
      * Slider methods
@@ -111,6 +112,13 @@ export default function Video() {
     } 
 
     /**
+     * Loop button handles
+     */
+    const handleToggleLoop = () => {
+        setToggleLoop(prev => !prev)
+    }
+
+    /**
      * React-Youtube player handles
      * 
      */
@@ -160,6 +168,7 @@ export default function Video() {
                     opts={opts}
                     onReady={onReady}
                 />
+                <button className={`btn ${toggleLoop ? 'btn-primary' : 'btn-outline-primary'}`} onClick={handleToggleLoop}>{toggleLoop ? "Loop On" : "Loop Off"}</button>
                 <div className='slider-container' style={{width: `${16 * VIDEO_K - 25}px`}}>
                     <Slider 
                         range 
