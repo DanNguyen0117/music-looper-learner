@@ -1,0 +1,10 @@
+.help-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(113, 113, 113);
+}
+
+.playback {
+    width: 45px;
+    text-align: center;
+}

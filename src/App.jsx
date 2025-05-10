@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PlaybackControls from './components/PlaybackControls'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -6,31 +6,19 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import { faPlay, faInfinity, faForward, faForwardFast, faPause, faBackward, faBackwardFast, faAngleRight, faAnglesRight, faAngleLeft, faAnglesLeft} from '@fortawesome/free-solid-svg-icons'
-
-
 import './App.css'
+import secondsToHMS from './utils/secondsToHMS'
 import YouTube from 'react-youtube'
-
-function secondsToHMS(seconds) {
-  const hours = seconds > 3600 ? Math.floor(seconds / 3600) : null
-  const minutes = hours ? Math.floor((seconds % 3600) / 60) : Math.floor(seconds / 60)
-  const remainingSeconds = Math.round(seconds % 60)
-
-  // Format the result
-  const formattedTime = (hours ? hours + ":" : "") + (minutes < 10 ? "0" : "") + minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds
-
-  return formattedTime
-}
 
 /**
  * Sample video urls:
- * Clair De Lune - Debussy (Rousseau). https://www.youtube.com/watch?v=WNcsUNKlAKw
- * My Favourite Things  - McCoy Tyner. https://www.youtube.com/watch?v=aeB43h2SiTM
- * piano jazz improvisation. https://www.youtube.com/watch?v=QBzHqW4V3lA
+ * All the Things You Are - Chet Baker.   https://www.youtube.com/watch?vngFdSR_aqdI
+ * Clair De Lune - Debussy (Rousseau).    https://www.youtube.com/watch?v=WNcsUNKlAKw
+ * My Favourite Things  - McCoy Tyner.    https://www.youtube.com/watch?v=aeB43h2SiTM
+ * Waltz For Debby - Bill Evans.          https://www.youtube.com/watch?v=QBzHqW4V3lA
  */
 const sampleVideos = [
+  'ngFdSR_aqdI',
   "WNcsUNKlAKw",
   "aeB43h2SiTM",
   "wCINvavqFXk",
@@ -38,18 +26,16 @@ const sampleVideos = [
 
 function App() {
   const [videoURL, setVideoURL] = useState('')
-  const [videoCode, setVideoCode] = useState('ngFdSR_aqdI') //All the Things You Are - Chet Baker
-
+  const [videoCode, setVideoCode] = useState(sampleVideos[0]) 
   const [startTime, setStartTime] = useState(0)
   const [endTime, setEndTime] = useState(0)
-
-  // const [sliderValues, setSliderValues] = useState([0, 100])
-
+  const [sliderValues, setSliderValues] = useState([0, 0])
   const [sampleVideoIndex, setSampleVideoIndex] = useState(0)
-
   const [toggleLoop, setToggleLoop] = useState(true)
-  
+  const [isPlaying, setIsPlaying] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+
+  let player = useRef(null)
 
   /**
    * handler functions
@@ -69,39 +55,30 @@ function App() {
       setVideoCode(code)
       setErrorMessage('')
     } else {
-      setErrorMessage('Invalid Youtube URL')
+      setErrorMessage('Invalid YouTube URL')
     }
   }
 
   const handleSampleVideo = () => {
-    setVideoCode(sampleVideos[sampleVideoIndex])
-    setSampleVideoIndex(index => index == sampleVideos.length - 1 ? 0 : index + 1)
+    const index = sampleVideoIndex === sampleVideos.length-1 ? 0 : sampleVideoIndex + 1
+    setVideoCode(sampleVideos[index])
+    setSampleVideoIndex(index)
     setErrorMessage('')
   }
 
   const handlePlaybackAction = () => {
     console.log('hi')
   }
-  // const handlePlaybackAction = (actionId) => {
-  //   switch (actionId) {
-  //     /**
-  //      * { icon: faBackwardFast, label: '-5s', id: 'rewind-5' },
-  //   { icon: faBackward, label: '-3s', id: 'rewind-3' },
-  //   { icon: faAnglesLeft, label: '-1s', id: 'rewind-1' },
-  //   { icon: faAngleLeft, label: '-1f', id: 'rewind-frame' },
-  //   { icon: faPlay, label: 'Play', id: 'play' },
-  //   { icon: faPause, label: 'Pause', id: 'pause'}
-  //   { icon: faAngleRight, label: '+1f', id: 'forward-frame' },
-  //   { icon: faAnglesRight, label: '+1s', id: 'forward-1' },
-  //   { icon: faForward, label: '+3s', id: 'forward-3' },
-  //   { icon: faForwardFast, label: '+5s', id: 'forward-5' },
-  //      */
-  //   }
 
   // }
-  const onPlayerReady = (event) => {
+  const onReady = (event) => {
     // access to player in all event handlers via event.target
+    setIsPlaying(true)
     // event.target.pauseVideo();
+    player.current = event.target
+    setStartTime(0)
+    setEndTime(event.target.getDuration()-1)                      // ARBITRARY!!! since most videos are 1s behind this can be a more accurate change
+    setSliderValues([0, event.target.getDuration()])
   }
 
   const opts = {
@@ -116,23 +93,30 @@ function App() {
   return (
     <>
       <h1 className='title mb-4'>Music Looper Learner</h1>
-      <Container style={{ maxWidth: '600px' }} className="mb-4">
+      <Container style={{ maxWidth: '800px' }} className="mb-4">
         <Form className='mb-4'>
           <Form.Control style={{width: '100%'}} className='mb-3' size="lg" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange}/>
           <Button className='me-4' variant='success' type='button' onClick={handleYoutubeSubmit}>Upload</Button>
-          <Button variant='primary' type='button' onClick={handleSampleVideo}>{videoCode === 'ngFdSR_aqdI' ? "Try Sample Video" : "Try Another Video"}</Button>
+          <Button variant='primary' type='button' onClick={handleSampleVideo}>{sampleVideoIndex === 0 ? "Try Sample Video" : "Try Another Video"}</Button>
         </Form>
       </Container>
+
       {errorMessage ? <div className='error-msg mb-1'>{errorMessage}</div> : <div style={{ height: '25px' }}></div>}
+
       <div className='mb-4'>
-        <YouTube videoId={videoCode} opts={opts} onReady={onPlayerReady} />
+        <YouTube 
+          videoId={videoCode} 
+          opts={opts} 
+          onReady={onReady}  
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          />
       </div>
 
-      {/* Playback buttons */}
-      <PlaybackControls />
+      <PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player}/>
       
       <p className="read-the-docs mb-4">
-        Click on the Vite and React logos to learn morea sdf;ksajdf;l kajs;lfksajd;lfasjdl;fksdajf;lk asldk fjl;aksj fl;skdaj fl;askdj f;lsakf jsa;ldkf jas;ldk fjsad;lkf jsad;lf ksaj;l fksajdlf;k djflsdjflks djal; kfsa;ldfk js;aldfkj
+        Click on the Vite and React logos to learn morea s;aldfkj... {secondsToHMS(startTime)} - {secondsToHMS(endTime)}
       </p>
     </>
   )
