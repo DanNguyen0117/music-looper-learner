@@ -12,12 +12,14 @@ import YouTube from 'react-youtube'
 
 /**
  * Sample video urls:
- * All the Things You Are - Chet Baker.   https://www.youtube.com/watch?vngFdSR_aqdI
+ * All the Things You Are - Chet Baker.   https://www.youtube.com/watch?v=ngFdSR_aqdI
  * Clair De Lune - Debussy (Rousseau).    https://www.youtube.com/watch?v=WNcsUNKlAKw
  * My Favourite Things  - McCoy Tyner.    https://www.youtube.com/watch?v=aeB43h2SiTM
  * Waltz For Debby - Bill Evans.          https://www.youtube.com/watch?v=QBzHqW4V3lA
+ * https://www.youtube.com/watch?v=lTRiuFIWV54
  */
 const sampleVideos = [
+  'lTRiuFIWV54',
   'ngFdSR_aqdI',
   "WNcsUNKlAKw",
   "aeB43h2SiTM",
@@ -36,6 +38,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('')
 
   let player = useRef(null)
+  const VIDEO_K = 26
 
   /**
    * handler functions
@@ -82,22 +85,23 @@ function App() {
   }
 
   const opts = {
-    height: '273',
-    width: '448',
+    height: String(10 * VIDEO_K),
+    width: String(40 * VIDEO_K),
     playerVars: {
       autoplay: 1,
+      iv_load_policy: 3,
     },
 
   }
 
   return (
     <>
-      <h1 className='title mb-4'>Music Looper Learner</h1>
+      <h1 className='mb-4'>Music Looper Learner!</h1>
       <Container style={{ maxWidth: '800px' }} className="mb-4">
-        <Form className='mb-4'>
-          <Form.Control style={{width: '100%'}} className='mb-3' size="lg" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange}/>
-          <Button className='me-4' variant='success' type='button' onClick={handleYoutubeSubmit}>Upload</Button>
-          <Button variant='primary' type='button' onClick={handleSampleVideo}>{sampleVideoIndex === 0 ? "Try Sample Video" : "Try Another Video"}</Button>
+        <Form className='d-flex gap-3 align-items-center'>
+          <Form.Control style={{flexGrow: 1}} className='mb-2' size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange}/>
+          <Button className='mb-2' variant='success' type='button' onClick={handleYoutubeSubmit}>Upload</Button>
+          <Button className='mb-2' variant='primary' style={{ whiteSpace: 'nowrap' }} type='button' onClick={handleSampleVideo}>{sampleVideoIndex === 0 ? "Try Sample Video" : "Try Another Video"}</Button>
         </Form>
       </Container>
 
