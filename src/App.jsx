@@ -16,10 +16,10 @@ import YouTube from 'react-youtube'
  * Clair De Lune - Debussy (Rousseau).    https://www.youtube.com/watch?v=WNcsUNKlAKw
  * My Favourite Things  - McCoy Tyner.    https://www.youtube.com/watch?v=aeB43h2SiTM
  * Waltz For Debby - Bill Evans.          https://www.youtube.com/watch?v=QBzHqW4V3lA
- * https://www.youtube.com/watch?v=lTRiuFIWV54
+ * https://www.youtube.com/watch?v=5Iv3Fi8eb7w
  */
 const sampleVideos = [
-  'lTRiuFIWV54',
+  '5Iv3Fi8eb7w',
   'ngFdSR_aqdI',
   "WNcsUNKlAKw",
   "aeB43h2SiTM",
@@ -30,6 +30,7 @@ function App() {
   const [videoURL, setVideoURL] = useState('')
   const [videoCode, setVideoCode] = useState(sampleVideos[0]) 
   const [startTime, setStartTime] = useState(0)
+  const [currentTime, setCurrentTime] = useState(0)
   const [endTime, setEndTime] = useState(0)
   const [sliderValues, setSliderValues] = useState([0, 0])
   const [sampleVideoIndex, setSampleVideoIndex] = useState(0)
@@ -40,6 +41,13 @@ function App() {
   let player = useRef(null)
   const VIDEO_K = 26
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const current = player.current?.getCurrentTime()
+      setCurrentTime(current)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
   /**
    * handler functions
    */
@@ -99,9 +107,9 @@ function App() {
       <h1 className='mb-4'>Music Looper Learner!</h1>
       <Container style={{ maxWidth: '800px' }} className="mb-4">
         <Form className='d-flex gap-3 align-items-center'>
-          <Form.Control style={{flexGrow: 1}} className='mb-2' size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange}/>
-          <Button className='mb-2' variant='success' type='button' onClick={handleYoutubeSubmit}>Upload</Button>
-          <Button className='mb-2' variant='primary' style={{ whiteSpace: 'nowrap' }} type='button' onClick={handleSampleVideo}>{sampleVideoIndex === 0 ? "Try Sample Video" : "Try Another Video"}</Button>
+          <Form.Control style={{flexGrow: 1}} size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange}/>
+          <Button variant='success' type='button' onClick={handleYoutubeSubmit}>Upload</Button>
+          <Button variant='primary' style={{ whiteSpace: 'nowrap' }} type='button' onClick={handleSampleVideo}>{sampleVideoIndex === 0 ? "Try Sample Video" : "Try Another Video"}</Button>
         </Form>
       </Container>
 
@@ -120,7 +128,7 @@ function App() {
       <PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player}/>
       
       <p className="read-the-docs mb-4">
-        Click on the Vite and React logos to learn morea s;aldfkj... {secondsToHMS(startTime)} - {secondsToHMS(endTime)}
+        Click on the Vite and React logos to learn morea s;aldfkj... {secondsToHMS(startTime)} - {secondsToHMS(currentTime)} - {secondsToHMS(endTime)}
       </p>
     </>
   )
