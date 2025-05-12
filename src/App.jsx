@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import PlaybackControls from './components/PlaybackControls';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { useEffect, useRef, useState } from 'react'
+import PlaybackControls from './components/PlaybackControls'
+import LoopControls from './components/LoopControls'
+
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
