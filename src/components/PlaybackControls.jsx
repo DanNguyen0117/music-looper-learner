@@ -82,7 +82,7 @@ function PlaybackControls({ isPlaying, setIsPlaying, playerRef }) {
 		<Container className="mb-3 d-flex flex-wrap justify-content-center">
 			{buttons.map(({ icon, label, id, handler }) => (
 				<div className={`text-center ${id === 'forward-5' ? '' : 'me-3'}`} key={id}>
-					<Button variant="primary" className="playback" onClick={handler}>
+					<Button variant="dark" className="playback" onClick={handler}>
 						<FontAwesomeIcon icon={icon} />
 					</Button>
 					<div className="help-text">{label}</div>

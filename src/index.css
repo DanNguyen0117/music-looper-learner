@@ -25,6 +25,12 @@ body {
   line-height: 1.1;
 }
 
+.help-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(113, 113, 113);
+}
+
 /* button {
   border-radius: 8px;
   border: 1px solid transparent;

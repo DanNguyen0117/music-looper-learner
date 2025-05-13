@@ -84,7 +84,7 @@ function App() {
 		// event.target.pauseVideo();
 		player.current = event.target;
 		setStartTime(0);
-		setEndTime(event.target.getDuration() - 1); // ARBITRARY!!! since most videos are 1s behind this can be a more accurate change
+		setEndTime(event.target.getDuration()); // ARBITRARY!!! since most videos are 1s behind this can be a more accurate change
 		setSliderValues([0, event.target.getDuration()]);
 	};
 
@@ -121,12 +121,11 @@ function App() {
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 
 			<LoopControls
-				startTime={startTime}
-				setStartTime={setStartTime}
 				currentTime={currentTime}
 				playerRef={player}
 				toggleLoop={toggleLoop}
 				setToggleLoop={setToggleLoop}
+                endTime={endTime}
 			/>
 		</>
 	);
