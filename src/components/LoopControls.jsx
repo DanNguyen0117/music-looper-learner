@@ -86,6 +86,8 @@ export default function LoopControls({ startTime, setStartTime, currentTime, pla
         const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
         if (playerRef.current && startLoopTime <= endLoopTime) {
 		    setToggleLoop((prev) => !prev);
+            playerRef.current.seekTo(startLoopTime, true);
+            playerRef.current.playVideo();
         }
 	};
 
