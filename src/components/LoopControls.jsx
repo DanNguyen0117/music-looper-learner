@@ -244,7 +244,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 				<Col xs="auto">
 					<div className="d-flex flex-column">
 						<Button
-							className="mt-1 mb-3"
+							className="mt-2 mb-3"
 							variant={toggleLoop ? 'danger' : 'primary'}
 							style={{ maxWidth: '90px' }}
 							onClick={handleToggleLoop}
