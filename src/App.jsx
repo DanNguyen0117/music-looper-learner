@@ -18,9 +18,8 @@ import YouTube from 'react-youtube';
  * Clair De Lune - Debussy (Rousseau).    https://www.youtube.com/watch?v=WNcsUNKlAKw
  * My Favourite Things  - McCoy Tyner.    https://www.youtube.com/watch?v=aeB43h2SiTM
  * Waltz For Debby - Bill Evans.          https://www.youtube.com/watch?v=QBzHqW4V3lA
- * https://www.youtube.com/watch?v=5Iv3Fi8eb7w
  */
-const sampleVideos = ['5Iv3Fi8eb7w', 'ngFdSR_aqdI', 'WNcsUNKlAKw', 'aeB43h2SiTM', 'wCINvavqFXk'];
+const sampleVideos = ['ngFdSR_aqdI', 'WNcsUNKlAKw', 'aeB43h2SiTM', 'wCINvavqFXk'];
 
 function App() {
 	const [videoURL, setVideoURL] = useState('');
