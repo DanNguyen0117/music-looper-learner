@@ -18,17 +18,9 @@ export default function LoopControls({ startTime, setStartTime, currentTime, pla
 				playerRef.current.seekTo(startLoopTime, true);
 				playerRef.current.playVideo();
 			}
-		}, 50);
 
-		return () => {
-			clearInterval(interval);
-		};
-	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop]);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
 			if (isLoopedOnce && playerRef.current.getCurrentTime() >= endLoopTime) {
+				console.log('it is pausing');
 				playerRef.current.pauseVideo();
 				setIsLoopedOnce(false);
 			}
@@ -37,7 +29,7 @@ export default function LoopControls({ startTime, setStartTime, currentTime, pla
 		return () => {
 			clearInterval(interval);
 		};
-	}, [isLoopedOnce, endMinutes, endSeconds]);
+	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop, isLoopedOnce]);
 
 	const handleStartSetTime = () => {
 		const t = secondsToHMSTuple(currentTime);
@@ -90,21 +82,26 @@ export default function LoopControls({ startTime, setStartTime, currentTime, pla
 	};
 
 	const handleToggleLoop = () => {
-		setToggleLoop((prev) => !prev);
+        const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
+        const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
+        if (playerRef.current && startLoopTime <= endLoopTime) {
+		    setToggleLoop((prev) => !prev);
+        }
 	};
 
 	const handleIsLoopedOnce = () => {
-        setIsLoopedOnce(true)
-		const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
-		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
-		if (
-			playerRef.current &&
-			startLoopTime <= endLoopTime &&
-			playerRef.current.getCurrentTime() >= endLoopTime
-		) {
-			playerRef.current.seekTo(startLoopTime, true);
-            playerRef.current.playVideo()
-		}
+        if (isLoopedOnce) {
+            setIsLoopedOnce(prev => !prev)
+        } else {
+            const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
+            const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
+            console.log(startLoopTime, endLoopTime)
+            if (playerRef.current && startLoopTime <= endLoopTime) {
+                setIsLoopedOnce(true);
+                playerRef.current.seekTo(startLoopTime, true);
+                playerRef.current.playVideo();
+            }
+        }
 	};
 
 	return (
@@ -143,10 +140,20 @@ export default function LoopControls({ startTime, setStartTime, currentTime, pla
 				</Col>
 				<Col>
 					<div className="d-flex flex-column">
-						<Button className="mt-3 mb-3" variant={toggleLoop ? 'outline-danger' : 'primary'} onClick={handleToggleLoop} disabled={isLoopedOnce}>
+						<Button
+							className="mt-3 mb-3"
+							variant={toggleLoop ? 'danger' : 'primary'}
+							onClick={handleToggleLoop}
+							disabled={isLoopedOnce}
+						>
 							{toggleLoop ? 'Stop Loop' : 'Start Loop'}
 						</Button>
-						<Button className="mb-3" variant={isLoopedOnce ? 'outline-danger' : 'success'} onClick={handleIsLoopedOnce} disabled={toggleLoop}>
+						<Button
+							className="mb-3"
+							variant={'success'}
+							onClick={handleIsLoopedOnce}
+							disabled={toggleLoop}
+						>
 							{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
 						</Button>
 					</div>

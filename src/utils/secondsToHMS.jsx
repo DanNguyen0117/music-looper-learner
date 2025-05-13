@@ -12,7 +12,7 @@ export function secondsToHMS(seconds) {
 }
 
 export function HMSToSeconds(hour, min, sec) {
-	return hour * 3600 + min * 60 + sec;
+	return Number(hour) * 3600 + Number(min) * 60 + Number(sec);
 }
 
 export function secondsToHMSTuple(seconds) {
