@@ -10,6 +10,12 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 	const [isLoopedOnce, setIsLoopedOnce] = new useState(false);
 
 	useEffect(() => {
+		const t = secondsToHMSTuple(endTime-1);
+		setEndMinutes(t.minutes);
+		setEndSeconds(t.seconds);
+	}, [endTime]);
+
+	useEffect(() => {
 		const interval = setInterval(() => {
 			const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
 			const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
@@ -96,98 +102,98 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 		}
 	};
 
-    const getDecimalOnly = (value) => {
-        return '.' + Number(value).toFixed(2).split('.')[1];
-    }
+	const getDecimalOnly = (value) => {
+		return '.' + Number(value).toFixed(2).split('.')[1];
+	};
 
-    const handleStartAdjust = (str) => {
-        switch (str) {
-            case '-1s':
-                if (startSeconds <= 0 && startMinutes > 0) {
-                    setStartSeconds(59)
-                    setStartMinutes(prev => prev - 1)
-                } 
-                else if (startSeconds > 0) {
-                    setStartSeconds(prev => prev - 1)
-                }
-                break;
-            case '-1f':
-                if (startSeconds <= 0.04 && startMinutes > 0) {
-                    setStartSeconds(59)
-                    setStartMinutes(prev => prev - 1)
-                } 
-                if (startSeconds > 0.04) {
-                    setStartSeconds(prev => Math.round((prev - 0.04) * 100) / 100)
-                }
-                break;
-            case '+1f':
-                if (startSeconds >= 59.96) {
-                    setStartSeconds(0)
-                    setStartMinutes(prev => prev + 1)
-                } else {
-                    setStartSeconds(prev => Math.round((prev + 0.04) * 100) / 100)
-                }
-                break;
-            case '+1s':
-                if (startSeconds >= 59) {
-                    setStartSeconds(0)
-                    setStartMinutes(prev => prev + 1)
-                } else {
-                    setStartSeconds(prev => prev + 1)
-                }
-                break;
-            default:
-                break;
-        }
-    }
+	const handleStartAdjust = (str) => {
+		switch (str) {
+			case '-1s':
+				if (startSeconds <= 0 && startMinutes > 0) {
+					setStartSeconds(59);
+					setStartMinutes((prev) => prev - 1);
+				} else if (startSeconds > 0) {
+					setStartSeconds((prev) => prev - 1);
+				}
+				break;
+			case '-1f':
+				if (startSeconds <= 0.04 && startMinutes > 0) {
+					setStartSeconds(59);
+					setStartMinutes((prev) => prev - 1);
+				}
+				if (startSeconds > 0.04) {
+					setStartSeconds((prev) => Math.round((prev - 0.04) * 100) / 100);
+				}
+				break;
+			case '+1f':
+				if (startSeconds >= 59.96) {
+					setStartSeconds(0);
+					setStartMinutes((prev) => prev + 1);
+				} else {
+					setStartSeconds((prev) => Math.round((prev + 0.04) * 100) / 100);
+				}
+				break;
+			case '+1s':
+				if (startSeconds >= 59) {
+					setStartSeconds(0);
+					setStartMinutes((prev) => prev + 1);
+				} else {
+					setStartSeconds((prev) => prev + 1);
+				}
+				break;
+			default:
+				break;
+		}
+	};
 
-    const handleEndAdjust = (str) => {
-        switch (str) {
-            case '-1s':
-                if (endSeconds <= 0 && endMinutes > 0) {
-                    setEndSeconds(59)
-                    setEndMinutes(prev => prev - 1)
-                } 
-                else if (endSeconds > 0) {
-                    setEndSeconds(prev => prev - 1)
-                }
-                break;
-            case '-1f':
-                if (endSeconds <= 0.04 && endMinutes > 0) {
-                    setEndSeconds(59)
-                    setEndMinutes(prev => prev - 1)
-                } 
-                if (endSeconds > 0.04) {
-                    setEndSeconds(prev => Math.round((prev - 0.04) * 100) / 100)
-                }
-                break;
-            case '+1f':
-                if (endSeconds >= 59.96) {
-                    setEndSeconds(0)
-                    setEndMinutes(prev => prev + 1)
-                } else {
-                    setEndSeconds(prev => Math.round((prev + 0.04) * 100) / 100)
-                }
-                break;
-            case '+1s':
-                if (endSeconds >= 59) {
-                    setEndSeconds(0)
-                    setEndMinutes(prev => prev + 1)
-                } else {
-                    setEndSeconds(prev => prev + 1)
-                }
-                break;
-            default:
-                break;
-        }
-    }
+	const handleEndAdjust = (str) => {
+		switch (str) {
+			case '-1s':
+				if (endSeconds <= 0 && endMinutes > 0) {
+					setEndSeconds(59);
+					setEndMinutes((prev) => prev - 1);
+				} else if (endSeconds > 0) {
+					setEndSeconds((prev) => prev - 1);
+				}
+				break;
+			case '-1f':
+				if (endSeconds <= 0.04 && endMinutes > 0) {
+					setEndSeconds(59);
+					setEndMinutes((prev) => prev - 1);
+				}
+				if (endSeconds > 0.04) {
+					setEndSeconds((prev) => Math.round((prev - 0.04) * 100) / 100);
+				}
+				break;
+			case '+1f':
+				if (endSeconds >= 59.96) {
+					setEndSeconds(0);
+					setEndMinutes((prev) => prev + 1);
+				} else {
+					setEndSeconds((prev) => Math.round((prev + 0.04) * 100) / 100);
+				}
+				break;
+			case '+1s':
+				if (endSeconds >= 59) {
+					setEndSeconds(0);
+					setEndMinutes((prev) => prev + 1);
+				} else {
+					setEndSeconds((prev) => prev + 1);
+				}
+				break;
+			default:
+				break;
+		}
+	};
 
 	return (
 		<>
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<Col xs="auto">
 					<div>
-						<div className="mb-2" style={{fontSize: '20px', fontWeight: '700'}}>Loop Start</div>
+						<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>
+							Loop Start
+						</div>
 						<div className="mb-3 d-flex align-items-center justify-content-center gap-1">
 							<div>
 								<Form.Control
@@ -204,11 +210,11 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 									type="text"
 									value={Math.trunc(startSeconds)}
 									onChange={handleStartSeconds}
-									style={{ width: '45px', textAlign: 'left' }}
+									style={{ width: '45px', textAlign: 'right' }}
 								/>
 								<div className="help-text">sec</div>
 							</div>
-                            <div className='mb-3'>{getDecimalOnly(startSeconds)}</div>
+							<div className="mb-3">{getDecimalOnly(startSeconds)}</div>
 						</div>
 
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
@@ -259,7 +265,9 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 				</Col>
 				<Col xs="auto">
 					<div>
-						<div className="mb-2" style={{fontSize: '20px', fontWeight: '700'}}>Loop End</div>
+						<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>
+							Loop End
+						</div>
 						<div className="mb-3 d-flex align-items-center justify-content-center gap-1">
 							<div>
 								<Form.Control type="text" value={endMinutes} onChange={handleEndMinutes} style={{ width: '45px', textAlign: 'right' }} />
@@ -267,10 +275,15 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="mb-4">:</div>
 							<div>
-								<Form.Control type="text" value={Math.trunc(endSeconds)} onChange={handleEndSeconds} style={{ width: '45px', textAlign: 'right' }} />
+								<Form.Control
+									type="text"
+									value={Math.trunc(endSeconds)}
+									onChange={handleEndSeconds}
+									style={{ width: '45px', textAlign: 'right' }}
+								/>
 								<div className="help-text">sec</div>
 							</div>
-                            <div className='mb-3'>{getDecimalOnly(endSeconds)}</div>
+							<div className="mb-3">{getDecimalOnly(endSeconds)}</div>
 						</div>
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
 							<div>
@@ -294,7 +307,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 									+1f
 								</Button>
 							</div>
-							<div className='ms-1'>
+							<div className="ms-1">
 								<Button variant="secondary" onClick={() => handleEndAdjust('+1s')}>
 									+1s
 								</Button>
