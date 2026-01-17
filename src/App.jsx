@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import PlaybackControls from './components/PlaybackControls';
 import LoopControls from './components/LoopControls';
+import SpeedControls from './components/SpeedControls';
+import ShiftLoopControls from './components/ShiftLoopControls';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -121,13 +123,16 @@ function App() {
 
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 
-			<LoopControls
-				currentTime={currentTime}
-				playerRef={player}
-				toggleLoop={toggleLoop}
-				setToggleLoop={setToggleLoop}
-                endTime={endTime}
-			/>
+			<LoopControls currentTime={currentTime} playerRef={player} toggleLoop={toggleLoop} setToggleLoop={setToggleLoop} endTime={endTime} />
+
+			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
+				<Col xs="auto">
+					<SpeedControls playerRef={player} />
+				</Col>
+				<Col xs="auto">
+					<ShiftLoopControls />
+				</Col>
+			</Row>
 		</>
 	);
 }
