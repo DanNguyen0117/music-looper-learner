@@ -121,20 +121,20 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 				}
 				break;
 			case '-1f':
-				if (startSeconds <= 0.04 && startMinutes > 0) {
+				if (startSeconds <= 0.05 && startMinutes > 0) {
 					setStartSeconds(59);
 					setStartMinutes((prev) => prev - 1);
 				}
-				if (startSeconds > 0.04) {
-					setStartSeconds((prev) => Math.round((prev - 0.04) * 100) / 100);
+				if (startSeconds > 0.05) {
+					setStartSeconds((prev) => Math.round((prev - 0.05) * 100) / 100);
 				}
 				break;
 			case '+1f':
-				if (startSeconds >= 59.96) {
+				if (startSeconds >= 59.95) {
 					setStartSeconds(0);
 					setStartMinutes((prev) => prev + 1);
 				} else {
-					setStartSeconds((prev) => Math.round((prev + 0.04) * 100) / 100);
+					setStartSeconds((prev) => Math.round((prev + 0.05) * 100) / 100);
 				}
 				break;
 			case '+1s':
@@ -161,20 +161,20 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 				}
 				break;
 			case '-1f':
-				if (endSeconds <= 0.04 && endMinutes > 0) {
+				if (endSeconds <= 0.05 && endMinutes > 0) {
 					setEndSeconds(59);
 					setEndMinutes((prev) => prev - 1);
 				}
-				if (endSeconds > 0.04) {
-					setEndSeconds((prev) => Math.round((prev - 0.04) * 100) / 100);
+				if (endSeconds > 0.05) {
+					setEndSeconds((prev) => Math.round((prev - 0.05) * 100) / 100);
 				}
 				break;
 			case '+1f':
-				if (endSeconds >= 59.96) {
+				if (endSeconds >= 59.95) {
 					setEndSeconds(0);
 					setEndMinutes((prev) => prev + 1);
 				} else {
-					setEndSeconds((prev) => Math.round((prev + 0.04) * 100) / 100);
+					setEndSeconds((prev) => Math.round((prev + 0.05) * 100) / 100);
 				}
 				break;
 			case '+1s':
