@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Col, Container, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { secondsToHMS, secondsToHMSTuple, HMSToSeconds } from '../utils/secondsToHMS';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+	faAngleRight,
+	faAngleLeft,
+} from '@fortawesome/free-solid-svg-icons';
 export default function LoopControls({ currentTime, playerRef, toggleLoop, setToggleLoop, endTime }) {
 	const [startMinutes, setStartMinutes] = new useState(0);
 	const [startSeconds, setStartSeconds] = new useState(0);
@@ -189,6 +193,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 	return (
 		<>
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
+				{/* START LOOP COLUMN */}
 				<Col xs="auto">
 					<div>
 						<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>
@@ -216,17 +221,14 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="mb-3">{getDecimalOnly(startSeconds)}</div>
 						</div>
-
+						
+						{/* START LOOP CONTROLS */}
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
-							<div className="me-1">
-								<Button variant="secondary" onClick={() => handleStartAdjust('-1s')}>
-									-1s
-								</Button>
-							</div>
 							<div className="me-2">
 								<Button variant="secondary" onClick={() => handleStartAdjust('-1f')}>
-									-1f
+									<FontAwesomeIcon icon={faAngleLeft} />
 								</Button>
+								<div className="help-text">-1f</div>
 							</div>
 							<div className="me-2">
 								<Button variant="success" onClick={handleStartSetTime}>
@@ -236,17 +238,15 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="me-1">
 								<Button variant="secondary" onClick={() => handleStartAdjust('+1f')}>
-									+1f
+									<FontAwesomeIcon icon={faAngleRight} />
 								</Button>
-							</div>
-							<div>
-								<Button variant="secondary" onClick={() => handleStartAdjust('+1s')}>
-									+1s
-								</Button>
+								<div className="help-text">+1f</div>
 							</div>
 						</Container>
 					</div>
 				</Col>
+
+				{/* LOOP CONTROLS */}
 				<Col xs="auto">
 					<div className="d-flex flex-column">
 						<Button
@@ -263,6 +263,8 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 						</Button>
 					</div>
 				</Col>
+
+				{/* END LOOP COLUMN */}
 				<Col xs="auto">
 					<div>
 						<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>
@@ -285,16 +287,14 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="mb-3">{getDecimalOnly(endSeconds)}</div>
 						</div>
+
+						{/* END LOOP CONTROLS */}
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
-							<div>
-								<Button variant="secondary" onClick={() => handleEndAdjust('-1s')}>
-									-1s
-								</Button>
-							</div>
 							<div className="ms-1">
 								<Button variant="secondary" onClick={() => handleEndAdjust('-1f')}>
-									-1f
+									<FontAwesomeIcon icon={faAngleLeft} />
 								</Button>
+								<div className="help-text">-1f</div>
 							</div>
 							<div className="ms-2">
 								<Button variant="success" onClick={handleEndSetTime}>
@@ -304,13 +304,9 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="ms-2">
 								<Button variant="secondary" onClick={() => handleEndAdjust('+1f')}>
-									+1f
+									<FontAwesomeIcon icon={faAngleRight} />
 								</Button>
-							</div>
-							<div className="ms-1">
-								<Button variant="secondary" onClick={() => handleEndAdjust('+1s')}>
-									+1s
-								</Button>
+								<div className="help-text">+1f</div>
 							</div>
 						</Container>
 					</div>
