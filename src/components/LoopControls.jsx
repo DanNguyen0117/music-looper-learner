@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { Col, Container, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { secondsToHMS, secondsToHMSTuple, HMSToSeconds } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faAngleRight,
-	faAngleLeft,
-} from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 export default function LoopControls({ currentTime, playerRef, toggleLoop, setToggleLoop, endTime }) {
 	const [startMinutes, setStartMinutes] = new useState(0);
 	const [startSeconds, setStartSeconds] = new useState(0);
@@ -14,7 +11,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 	const [isLoopedOnce, setIsLoopedOnce] = new useState(false);
 
 	useEffect(() => {
-		const t = secondsToHMSTuple(endTime-1);
+		const t = secondsToHMSTuple(endTime - 1);
 		setEndMinutes(t.minutes);
 		setEndSeconds(t.seconds);
 	}, [endTime]);
@@ -41,16 +38,28 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 		};
 	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop, isLoopedOnce]);
 
+	function roundToNearest05(n) {
+		return Math.round(n / 0.05) * 0.05;
+	}
+
 	const handleStartSetTime = () => {
-		const t = secondsToHMSTuple(currentTime);
-		setStartMinutes(t.minutes);
-		setStartSeconds(t.seconds);
+		const totalSeconds = playerRef.current.getCurrentTime();
+
+		const minutes = Math.floor(totalSeconds / 60);
+		const seconds = roundToNearest05(totalSeconds % 60);
+
+		setStartMinutes(minutes);
+		setStartSeconds(seconds);
 	};
 
 	const handleEndSetTime = () => {
-		const t = secondsToHMSTuple(currentTime);
-		setEndMinutes(t.minutes);
-		setEndSeconds(t.seconds);
+		const totalSeconds = playerRef.current.getCurrentTime();
+
+		const minutes = Math.floor(totalSeconds / 60);
+		const seconds = roundToNearest05(totalSeconds % 60);
+		
+		setEndMinutes(minutes);
+		setEndSeconds(seconds);
 	};
 
 	const handleStartMinutes = (e) => {
@@ -221,7 +230,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 							</div>
 							<div className="mb-3">{getDecimalOnly(startSeconds)}</div>
 						</div>
-						
+
 						{/* START LOOP CONTROLS */}
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
 							<div className="me-2">
