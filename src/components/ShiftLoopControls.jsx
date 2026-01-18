@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './LoopControls.css';
 
 function ShiftLoopControls({
-	playerRef,
 	startMinutes,
 	startSeconds,
 	setStartMinutes,

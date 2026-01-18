@@ -3,3 +3,98 @@
     font-weight: 600;
     color: rgb(113, 113, 113);
 }
+
+/* ===== Pushable 3D Bootstrap Buttons ===== */
+/* Remove ALL Bootstrap shadows */
+.btn-pushable,
+.btn-pushable:focus,
+.btn-pushable:active,
+.btn-pushable.active,
+.btn-pushable:disabled {
+    box-shadow: none !important;
+}
+
+.btn-primary.btn-pushable,
+.btn-danger.btn-pushable,
+.btn-success.btn-pushable {
+    transition: none;
+}
+
+.btn-pushable {
+    border: none;
+    padding: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    outline-offset: 4px;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.25);
+}
+
+.btn-pushable:focus {
+    box-shadow: none;
+}
+
+/* Moving face */
+.btn-pushable .btn-front {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    min-height: 40px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #fff;
+    transform: translateY(-7px);
+    transition: transform 0.08s ease;
+    user-select: none;
+}
+
+/* Physical press — ONLY on the pressed button */
+.btn-pushable.is-pressed .btn-front {
+    transform: translateY(-2px);
+}
+
+/* Reset Bootstrap active/toggle visuals */
+.btn-pushable.active .btn-front,
+.btn-pushable[aria-pressed="true"] .btn-front {
+    transform: translateY(-6px);
+}
+
+/* ===== Variant shells ===== */
+
+/* Primary */
+.btn-primary.btn-pushable {
+    background: #0a58ca;
+}
+
+.btn-primary.btn-pushable .btn-front {
+    background: #0d6efd;
+}
+
+/* Danger */
+.btn-danger.btn-pushable {
+    background: #b02a37;
+}
+
+.btn-danger.btn-pushable .btn-front {
+    background: #dc3545;
+}
+
+/* Success */
+.btn-success.btn-pushable {
+    background: #146c43;
+}
+
+.btn-success.btn-pushable .btn-front {
+    background: #198754;
+}
+
+/* Disabled */
+.btn-pushable:disabled {
+    cursor: not-allowed;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-pushable:disabled .btn-front {
+    transform: translateY(-2px);
+    opacity: 0.65;
+}

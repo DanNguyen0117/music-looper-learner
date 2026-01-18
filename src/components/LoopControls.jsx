@@ -3,7 +3,7 @@ import { Col, Container, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { secondsToHMS, secondsToHMSTuple, HMSToSeconds, roundToNearest05 } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import './LoopControls.css'
+import './LoopControls.css';
 
 export default function LoopControls({
 	currentTime,
@@ -106,14 +106,24 @@ export default function LoopControls({
 		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
 		if (playerRef.current && startLoopTime <= endTime && endLoopTime <= endTime && startLoopTime < endLoopTime) {
 			setToggleLoop((prev) => !prev);
-			playerRef.current.seekTo(startLoopTime, true);
-			playerRef.current.playVideo();
+
+			// toggleLoop backwards logic!
+			if (toggleLoop) {
+				// setToggleLoop would have made toggleLoop FALSE, but due to React state not updating immediately the current bool val for toggleLoop is still TRUE
+				// user pressed "Stop Loop" therefore we pause the video and go back to non-loop/normal mode and pause the video
+				playerRef.current.pauseVideo();
+			} else {
+				// user pressed "Start Loop" so we go back to the start of the loop time and play the video
+				playerRef.current.seekTo(startLoopTime, true);
+				playerRef.current.playVideo();
+			}
 		}
 	};
 
 	const handleIsLoopedOnce = () => {
 		if (isLoopedOnce) {
 			setIsLoopedOnce((prev) => !prev);
+			playerRef.current.pauseVideo();
 		} else {
 			const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
 			const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
@@ -242,7 +252,7 @@ export default function LoopControls({
 							<div className="mb-3">{getDecimalOnly(startSeconds)}</div>
 						</div>
 
-						{/* START LOOP CONTROLS */}
+						{/* START CONTROLS */}
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
 							<div className="me-2">
 								<Button variant="secondary" onClick={() => handleStartAdjust('-1f')}>
@@ -270,21 +280,34 @@ export default function LoopControls({
 				<Col xs="auto">
 					<div className="d-flex flex-column">
 						<Button
-							className="mt-2 mb-3"
+							className={`mt-2 mb-3 btn-pushable`}
 							variant={toggleLoop ? 'danger' : 'primary'}
 							style={{ maxWidth: '90px' }}
 							onClick={handleToggleLoop}
 							disabled={isLoopedOnce}
+							onMouseDown={(e) => e.currentTarget.classList.add('is-pressed')}
+							onMouseUp={(e) => e.currentTarget.classList.remove('is-pressed')}
+							onMouseLeave={(e) => e.currentTarget.classList.remove('is-pressed')}
 						>
-							{toggleLoop ? 'Stop Loop' : 'Start Loop'}
+							<span className="btn-front">{toggleLoop ? 'Stop Loop' : 'Start Loop'}</span>
 						</Button>
-						<Button className="mb-3" variant={'success'} onClick={handleIsLoopedOnce} style={{ maxWidth: '90px' }} disabled={toggleLoop}>
-							{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
+
+						<Button
+							className="mb-3 btn-pushable"
+							variant="success"
+							style={{ maxWidth: '90px' }}
+							onClick={handleIsLoopedOnce}
+							disabled={toggleLoop}
+							onMouseDown={(e) => e.currentTarget.classList.add('is-pressed')}
+							onMouseUp={(e) => e.currentTarget.classList.remove('is-pressed')}
+							onMouseLeave={(e) => e.currentTarget.classList.remove('is-pressed')}
+						>
+							<span className="btn-front">{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}</span>
 						</Button>
 					</div>
 				</Col>
 
-				{/* END LOOP COLUMN */}
+				{/* END AREA COLUMN */}
 				<Col xs="auto">
 					<div>
 						<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>
@@ -308,7 +331,7 @@ export default function LoopControls({
 							<div className="mb-3">{getDecimalOnly(endSeconds)}</div>
 						</div>
 
-						{/* END LOOP CONTROLS */}
+						{/* END CONTROLS */}
 						<Container className="mb-3 d-flex flex-wrap justify-content-center">
 							<div className="ms-1">
 								<Button variant="secondary" onClick={() => handleEndAdjust('-1f')}>

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faPlay,
-	faInfinity,
+	//faInfinity,
 	faForward,
 	faForwardFast,
 	faPause,

@@ -11,7 +11,6 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 
 import './App.css';
-import { secondsToHMS } from './utils/secondsToHMS';
 import YouTube from 'react-youtube';
 
 /**
@@ -84,9 +83,9 @@ function App() {
 		setErrorMessage('');
 	};
 
-	const handlePlaybackAction = () => {
-		console.log('hi');
-	};
+	// const handlePlaybackAction = () => {
+	// 	console.log('hi');
+	// };
 
 	// }
 	const onReady = (event) => {
@@ -154,7 +153,6 @@ function App() {
 				</Col>
 				<Col xs="auto">
 					<ShiftLoopControls
-						playerRef={player}
 						startMinutes={startMinutes}
 						startSeconds={startSeconds}
 						setStartMinutes={setStartMinutes}
