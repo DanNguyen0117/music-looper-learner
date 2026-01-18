@@ -1,13 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Col, Container, Form, InputGroup, Row, Button } from 'react-bootstrap';
-import { secondsToHMS, secondsToHMSTuple, HMSToSeconds } from '../utils/secondsToHMS';
+import { secondsToHMS, secondsToHMSTuple, HMSToSeconds, roundToNearest05 } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-export default function LoopControls({ currentTime, playerRef, toggleLoop, setToggleLoop, endTime, videoCode }) {
-	const [startMinutes, setStartMinutes] = new useState(0);
-	const [startSeconds, setStartSeconds] = new useState(0);
-	const [endMinutes, setEndMinutes] = new useState(0);
-	const [endSeconds, setEndSeconds] = new useState(0);
+import './LoopControls.css'
+
+export default function LoopControls({
+	currentTime,
+	playerRef,
+	toggleLoop,
+	setToggleLoop,
+	endTime,
+	videoCode,
+	startMinutes,
+	startSeconds,
+	setStartMinutes,
+	setStartSeconds,
+	endMinutes,
+	endSeconds,
+	setEndMinutes,
+	setEndSeconds,
+}) {
 	const [isLoopedOnce, setIsLoopedOnce] = new useState(false);
 
 	useEffect(() => {
@@ -40,10 +53,6 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 		};
 	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop, isLoopedOnce]);
 
-	function roundToNearest05(n) {
-		return Math.round(n / 0.05) * 0.05;
-	}
-
 	const handleStartSetTime = () => {
 		const totalSeconds = playerRef.current.getCurrentTime();
 
@@ -59,7 +68,7 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 
 		const minutes = Math.floor(totalSeconds / 60);
 		const seconds = roundToNearest05(totalSeconds % 60);
-		
+
 		setEndMinutes(minutes);
 		setEndSeconds(seconds);
 	};

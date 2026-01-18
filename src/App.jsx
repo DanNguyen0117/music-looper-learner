@@ -36,6 +36,12 @@ function App() {
 	const [isPlaying, setIsPlaying] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
 
+	// user input start/end minutes and seconds
+	const [startMinutes, setStartMinutes] = new useState(0);
+	const [startSeconds, setStartSeconds] = new useState(0);
+	const [endMinutes, setEndMinutes] = new useState(0);
+	const [endSeconds, setEndSeconds] = new useState(0);
+
 	let player = useRef(null);
 	const VIDEO_K = 22;
 
@@ -125,14 +131,40 @@ function App() {
 
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 
-			<LoopControls currentTime={currentTime} playerRef={player} toggleLoop={toggleLoop} setToggleLoop={setToggleLoop} endTime={endTime} videoCode={videoCode} />
+			<LoopControls
+				currentTime={currentTime}
+				playerRef={player}
+				startMinutes={startMinutes}
+				startSeconds={startSeconds}
+				setStartMinutes={setStartMinutes}
+				setStartSeconds={setStartSeconds}
+				endMinutes={endMinutes}
+				endSeconds={endSeconds}
+				setEndMinutes={setEndMinutes}
+				setEndSeconds={setEndSeconds}
+				toggleLoop={toggleLoop}
+				setToggleLoop={setToggleLoop}
+				endTime={endTime}
+				videoCode={videoCode}
+			/>
 
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<Col xs="auto">
 					<SpeedControls playerRef={player} />
 				</Col>
 				<Col xs="auto">
-					<ShiftLoopControls />
+					<ShiftLoopControls
+						playerRef={player}
+						startMinutes={startMinutes}
+						startSeconds={startSeconds}
+						setStartMinutes={setStartMinutes}
+						setStartSeconds={setStartSeconds}
+						endMinutes={endMinutes}
+						endSeconds={endSeconds}
+						setEndMinutes={setEndMinutes}
+						setEndSeconds={setEndSeconds}
+						endTime={endTime}
+					/>
 				</Col>
 			</Row>
 		</>
