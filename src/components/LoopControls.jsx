@@ -3,7 +3,7 @@ import { Col, Container, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { secondsToHMS, secondsToHMSTuple, HMSToSeconds } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-export default function LoopControls({ currentTime, playerRef, toggleLoop, setToggleLoop, endTime }) {
+export default function LoopControls({ currentTime, playerRef, toggleLoop, setToggleLoop, endTime, videoCode }) {
 	const [startMinutes, setStartMinutes] = new useState(0);
 	const [startSeconds, setStartSeconds] = new useState(0);
 	const [endMinutes, setEndMinutes] = new useState(0);
@@ -12,9 +12,11 @@ export default function LoopControls({ currentTime, playerRef, toggleLoop, setTo
 
 	useEffect(() => {
 		const t = secondsToHMSTuple(endTime - 1);
+		setStartMinutes(0);
+		setStartSeconds(0);
 		setEndMinutes(t.minutes);
 		setEndSeconds(t.seconds);
-	}, [endTime]);
+	}, [videoCode, endTime]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {

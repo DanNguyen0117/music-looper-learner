@@ -34,7 +34,7 @@ function PlaybackControls({ isPlaying, setIsPlaying, playerRef }) {
 
 	const handleBackwardFrame = () => {
 		const currentTime = playerRef.current?.getCurrentTime();
-		playerRef.current?.seekTo(currentTime - 0.04, true); // estimate on frame
+		playerRef.current?.seekTo(currentTime - 0.05, true); // estimate on frame
 	};
 
 	const handleForward5 = () => {
@@ -54,7 +54,7 @@ function PlaybackControls({ isPlaying, setIsPlaying, playerRef }) {
 
 	const handleForwardFrame = () => {
 		const currentTime = playerRef.current?.getCurrentTime();
-		playerRef.current?.seekTo(currentTime + 0.04, true); // estimate on frame
+		playerRef.current?.seekTo(currentTime + 0.05, true); // estimate on frame
 	};
 
 	const handlePlayPause = () => {

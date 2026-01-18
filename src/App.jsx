@@ -43,7 +43,7 @@ function App() {
 		const interval = setInterval(() => {
 			const current = player.current?.getCurrentTime();
 			setCurrentTime(current);
-		}, 1000);
+		}, 50);
 		return () => clearInterval(interval);
 	}, []);
 
@@ -64,6 +64,8 @@ function App() {
 			const code = videoURL.split('v=')[1].split('&')[0];
 			setVideoCode(code);
 			setErrorMessage('');
+			setToggleLoop(false);
+			setStartTime(0);
 		} else {
 			setErrorMessage('Invalid YouTube URL');
 		}
@@ -93,7 +95,7 @@ function App() {
 
 	const opts = {
 		height: String(10 * VIDEO_K),
-		width: String(40 * VIDEO_K),
+		width: String(45 * VIDEO_K),
 		playerVars: {
 			autoplay: 1,
 			iv_load_policy: 3,
@@ -123,7 +125,7 @@ function App() {
 
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 
-			<LoopControls currentTime={currentTime} playerRef={player} toggleLoop={toggleLoop} setToggleLoop={setToggleLoop} endTime={endTime} />
+			<LoopControls currentTime={currentTime} playerRef={player} toggleLoop={toggleLoop} setToggleLoop={setToggleLoop} endTime={endTime} videoCode={videoCode} />
 
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<Col xs="auto">
