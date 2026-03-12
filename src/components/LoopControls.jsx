@@ -5,8 +5,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faAngleLeft, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
 import './LoopControls.css';
 
+function formatTimeDecimal(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toFixed(2).padStart(5, '0')}`;
+}
+
+function ActionButton({ variant, onClick, disabled, children }) {
+  const pushableProps = {
+    onMouseDown: (e) => e.currentTarget.classList.add('is-pressed'),
+    onMouseUp: (e) => e.currentTarget.classList.remove('is-pressed'),
+    onMouseLeave: (e) => e.currentTarget.classList.remove('is-pressed'),
+    onTouchStart: (e) => e.currentTarget.classList.add('is-pressed'),
+    onTouchEnd: (e) => e.currentTarget.classList.remove('is-pressed'),
+  };
+
+  return (
+    <Button
+      className="btn-pushable"
+      variant={variant}
+      style={{ minWidth: '120px' }}
+      onClick={onClick}
+      disabled={disabled}
+      {...pushableProps}
+    >
+      <span className="btn-front">{children}</span>
+    </Button>
+  );
+}
+
 // ─── Shared sub-component for Loop Start / Loop End columns ───────────────────
-function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTime, onSetTime, onAdjust }) {
+function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTime, onSetTime, onAdjust, loopDuration, isStart }) {
 	const getDecimalOnly = (value) => '.' + Number(value).toFixed(2).split('.')[1];
 
 	const handleMinutes = (e) => {
@@ -22,6 +51,18 @@ function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTi
 	return (
 		<Col xs="auto">
 			<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>{label}</div>
+
+			<div className="time-display mb-2" style={{ fontSize: '18px', fontFamily: 'monospace', fontWeight: '600' }}>
+				{isStart ? (
+					<>
+						<span>Current: {formatTimeDecimal(currentTime)}</span>
+					</>
+				) : (
+					<>
+						<span>Loop: {formatTimeDecimal(loopDuration)}</span>
+					</>
+				)}
+			</div>
 
 			<div className="mb-3 d-flex align-items-center justify-content-center gap-1">
 				<div>
@@ -158,63 +199,60 @@ export default function LoopControls({
 		}
 	};
 
-	// ── Pushable button helpers ──────────────────────────────────────────────
-	const pushableProps = {
-		onMouseDown: (e) => e.currentTarget.classList.add('is-pressed'),
-		onMouseUp:   (e) => e.currentTarget.classList.remove('is-pressed'),
-		onMouseLeave:(e) => e.currentTarget.classList.remove('is-pressed'),
-	};
+	const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
+	const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
+	const loopDuration = Math.max(0, endLoopTime - startLoopTime);
 
 	return (
-		<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
+		<div className="loop-controls">
+			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
+				<TimeColumn
+					label="Loop Start"
+					minutes={startMinutes}
+					seconds={startSeconds}
+					setMinutes={setStartMinutes}
+					setSeconds={setStartSeconds}
+					currentTime={currentTime}
+					onSetTime={makeSetTimeHandler(setStartMinutes, setStartSeconds)}
+					onAdjust={makeAdjustHandler(startMinutes, setStartMinutes, startSeconds, setStartSeconds)}
+					loopDuration={loopDuration}
+					isStart={true}
+				/>
 
-			<TimeColumn
-				label="Loop Start"
-				minutes={startMinutes}
-				seconds={startSeconds}
-				setMinutes={setStartMinutes}
-				setSeconds={setStartSeconds}
-				currentTime={currentTime}
-				onSetTime={makeSetTimeHandler(setStartMinutes, setStartSeconds)}
-				onAdjust={makeAdjustHandler(startMinutes, setStartMinutes, startSeconds, setStartSeconds)}
-			/>
+				<TimeColumn
+					label="Loop End"
+					minutes={endMinutes}
+					seconds={endSeconds}
+					setMinutes={setEndMinutes}
+					setSeconds={setEndSeconds}
+					currentTime={currentTime}
+					onSetTime={makeSetTimeHandler(setEndMinutes, setEndSeconds)}
+					onAdjust={makeAdjustHandler(endMinutes, setEndMinutes, endSeconds, setEndSeconds)}
+					loopDuration={loopDuration}
+					isStart={false}
+				/>
+			</Row>
 
-			{/* Center controls */}
-			<Col xs="auto" className="d-flex flex-column">
-				<Button
-					className="mt-2 mb-3 btn-pushable"
-					variant={toggleLoop ? 'danger' : 'primary'}
-					style={{ maxWidth: '90px' }}
-					onClick={onToggleLoop}
-					disabled={isLoopedOnce}
-					{...pushableProps}
-				>
-					<span className="btn-front">{toggleLoop ? 'Stop Loop' : 'Start Loop'}</span>
-				</Button>
-
-				<Button
-					className="mb-3 btn-pushable"
-					variant="success"
-					style={{ maxWidth: '90px' }}
-					onClick={handleIsLoopedOnce}
-					disabled={toggleLoop}
-					{...pushableProps}
-				>
-					<span className="btn-front">{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}</span>
-				</Button>
-			</Col>
-
-			<TimeColumn
-				label="Loop End"
-				minutes={endMinutes}
-				seconds={endSeconds}
-				setMinutes={setEndMinutes}
-				setSeconds={setEndSeconds}
-				currentTime={currentTime}
-				onSetTime={makeSetTimeHandler(setEndMinutes, setEndSeconds)}
-				onAdjust={makeAdjustHandler(endMinutes, setEndMinutes, endSeconds, setEndSeconds)}
-			/>
-
-		</Row>
+			<Row className="mb-4 justify-content-center">
+				<Col xs="auto">
+					<ActionButton
+						variant={toggleLoop ? 'danger' : 'primary'}
+						onClick={onToggleLoop}
+						disabled={isLoopedOnce}
+					>
+						{toggleLoop ? 'Stop Loop' : 'Start Loop'}
+					</ActionButton>
+				</Col>
+				<Col xs="auto">
+					<ActionButton
+						variant="success"
+						onClick={handleIsLoopedOnce}
+						disabled={toggleLoop}
+					>
+						{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
+					</ActionButton>
+				</Col>
+			</Row>
+		</div>
 	);
 }

@@ -194,8 +194,8 @@ function App() {
 	};
 
 	const opts = {
-		height: String(10 * VIDEO_K),
-		width: String(45 * VIDEO_K),
+		height: '100%',
+		width: '100%',
 		playerVars: {
 			autoplay: 1,
 			iv_load_policy: 3,
@@ -226,7 +226,7 @@ function App() {
 
 			{errorMessage ? <div className="error-msg mb-1">{errorMessage}</div> : <div style={{ height: '25px' }}></div>}
 
-			<div className="mb-4">
+			<div className="video-container mb-4">
 				<YouTube videoId={videoCode} opts={opts} onReady={onReady} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} />
 			</div>
 

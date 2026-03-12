@@ -66,23 +66,10 @@ function LoopPresets({
             Save Current Loop
           </Button>
         </Col>
-        <Col xs="auto">
-          <Button
-            variant="outline-secondary"
-            onClick={() => {
-              if (presets.length > 0) {
-                loadPreset(presets[presets.length - 1]);
-              }
-            }}
-            disabled={presets.length === 0}
-          >
-            Load Last Saved
-          </Button>
-        </Col>
       </Row>
       {presets.length > 0 && (
         <Row className="justify-content-center g-1">
-          {presets.slice().reverse().map((preset) => (
+          {presets.map((preset) => (
             <Col xs="auto" key={preset.id}>
               <Button
                 variant={selectedPreset === preset.id ? 'primary' : 'outline-secondary'}

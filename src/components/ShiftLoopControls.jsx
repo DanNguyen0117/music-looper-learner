@@ -103,7 +103,7 @@ function ShiftLoopControls({
 	return (
 		<>
 			<div className="mb-2" style={{ fontSize: '20px', fontWeight: '600' }}>
-				Shift Loop
+				Move Loop
 			</div>
 			<Container className="mb-3 d-flex flex-wrap justify-content-center">
 				<div className="ms-2">
