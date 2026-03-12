@@ -3,6 +3,9 @@ import PlaybackControls from './components/PlaybackControls';
 import LoopControls from './components/LoopControls';
 import SpeedControls from './components/SpeedControls';
 import ShiftLoopControls from './components/ShiftLoopControls';
+import Timeline from './components/Timeline';
+import LoopPresets from './components/LoopPresets';
+import DarkModeToggle from './components/DarkModeToggle';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -12,49 +15,124 @@ import Container from 'react-bootstrap/Container';
 
 import './App.css';
 import YouTube from 'react-youtube';
+import { HMSToSeconds, roundToNearest05 } from './utils/secondsToHMS';
 
-/**
- * Sample video urls:
- * A Night in Tunisia - arr. Jesus Molina 	https://www.youtube.com/watch?v=4RaR210hglo
- * All the Things You Are - Chet Baker.   	https://www.youtube.com/watch?v=ngFdSR_aqdI
- * Clair De Lune - Debussy (Rousseau).    	https://www.youtube.com/watch?v=WNcsUNKlAKw
- * My Favourite Things  - McCoy Tyner.    	https://www.youtube.com/watch?v=aeB43h2SiTM
- * Waltz For Debby - Bill Evans.          	https://www.youtube.com/watch?v=QBzHqW4V3lA
- */
 const sampleVideos = ['4RaR210hglo', 'ngFdSR_aqdI', 'WNcsUNKlAKw', 'aeB43h2SiTM', 'wCINvavqFXk'];
 
 function App() {
 	const [videoURL, setVideoURL] = useState('');
 	const [videoCode, setVideoCode] = useState(sampleVideos[0]);
-	const [startTime, setStartTime] = useState(0);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [endTime, setEndTime] = useState(0);
-	const [sliderValues, setSliderValues] = useState([0, 0]);
 	const [sampleVideoIndex, setSampleVideoIndex] = useState(0);
 	const [toggleLoop, setToggleLoop] = useState(false);
+	const [isLoopedOnce, setIsLoopedOnce] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(true);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
-	// user input start/end minutes and seconds
-	const [startMinutes, setStartMinutes] = new useState(0);
-	const [startSeconds, setStartSeconds] = new useState(0);
-	const [endMinutes, setEndMinutes] = new useState(0);
-	const [endSeconds, setEndSeconds] = new useState(0);
+	const [startMinutes, setStartMinutes] = useState(0);
+	const [startSeconds, setStartSeconds] = useState(0);
+	const [endMinutes, setEndMinutes] = useState(0);
+	const [endSeconds, setEndSeconds] = useState(0);
 
-	let player = useRef(null);
+	const player = useRef(null);
 	const VIDEO_K = 22;
 
 	useEffect(() => {
 		const interval = setInterval(() => {
 			const current = player.current?.getCurrentTime();
-			setCurrentTime(current);
+			if (current !== undefined) setCurrentTime(current);
 		}, 50);
 		return () => clearInterval(interval);
 	}, []);
 
-	/**
-	 * handler functions
-	 */
+	useEffect(() => {
+		const handleKeyDown = (e) => {
+			if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+			if (!player.current) return;
+
+			switch (e.key) {
+				case 'ArrowLeft':
+					e.preventDefault();
+					if (e.shiftKey) {
+						player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 0.05), true);
+					} else {
+						player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 5), true);
+					}
+					break;
+				case 'ArrowRight':
+					e.preventDefault();
+					if (e.shiftKey) {
+						player.current.seekTo(player.current.getCurrentTime() + 0.05, true);
+					} else {
+						player.current.seekTo(player.current.getCurrentTime() + 5, true);
+					}
+					break;
+				case 'l':
+				case 'L':
+					e.preventDefault();
+					handleToggleLoop();
+					break;
+				case '1':
+					e.preventDefault();
+					handleLoopOnce();
+					break;
+				case 's':
+				case 'S':
+					if (!e.ctrlKey && !e.metaKey) {
+						e.preventDefault();
+						const total = player.current.getCurrentTime();
+						setStartMinutes(Math.floor(total / 60));
+						setStartSeconds(roundToNearest05(total % 60));
+					}
+					break;
+				case 'e':
+				case 'E':
+					if (!e.ctrlKey && !e.metaKey) {
+						e.preventDefault();
+						const total = player.current.getCurrentTime();
+						setEndMinutes(Math.floor(total / 60));
+						setEndSeconds(roundToNearest05(total % 60));
+					}
+					break;
+				default:
+					break;
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [startMinutes, startSeconds, endMinutes, endSeconds, endTime, toggleLoop]);
+
+	const handleToggleLoop = () => {
+		const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
+		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
+		if (!player.current || startLoopTime > endTime || endLoopTime > endTime || startLoopTime >= endLoopTime) return;
+
+		setToggleLoop((prev) => !prev);
+		if (!toggleLoop) {
+			player.current.seekTo(startLoopTime, true);
+			player.current.playVideo();
+		} else {
+			player.current.pauseVideo();
+		}
+	};
+
+	const handleLoopOnce = () => {
+		const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
+		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
+		if (!player.current || startLoopTime >= endLoopTime) return;
+
+		setIsLoopedOnce(true);
+		player.current.seekTo(startLoopTime, true);
+		player.current.playVideo();
+	};
+
+	const handleStopLoopOnce = () => {
+		setIsLoopedOnce(false);
+		player.current?.pauseVideo();
+	};
 
 	const handleURLChange = (e) => {
 		e.preventDefault();
@@ -64,13 +142,12 @@ function App() {
 
 	const handleYoutubeSubmit = (event) => {
 		event.preventDefault();
-		const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?/;
+		const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)&?/;
 		if (youtubeRegex.test(videoURL)) {
 			const code = videoURL.split('v=')[1].split('&')[0];
 			setVideoCode(code);
 			setErrorMessage('');
 			setToggleLoop(false);
-			setStartTime(0);
 		} else {
 			setErrorMessage('Invalid YouTube URL');
 		}
@@ -81,21 +158,39 @@ function App() {
 		setVideoCode(sampleVideos[index]);
 		setSampleVideoIndex(index);
 		setErrorMessage('');
+		setToggleLoop(false);
 	};
 
-	// const handlePlaybackAction = () => {
-	// 	console.log('hi');
-	// };
-
-	// }
 	const onReady = (event) => {
-		// access to player in all event handlers via event.target
 		setIsPlaying(true);
-		// event.target.pauseVideo();
 		player.current = event.target;
-		setStartTime(0);
-		setEndTime(event.target.getDuration()); // ARBITRARY!!! since most videos are 1s behind this can be a more accurate change
-		setSliderValues([0, event.target.getDuration()]);
+		const duration = event.target.getDuration();
+		setEndTime(duration);
+		const t = secondsToHMSTuple(duration - 1);
+		setStartMinutes(0);
+		setStartSeconds(0);
+		setEndMinutes(t.minutes);
+		setEndSeconds(t.seconds);
+	};
+
+	const handleSpeedChange = (speed) => {
+		setPlaybackSpeed(speed);
+		player.current?.setPlaybackRate(speed);
+	};
+
+	const handleLoadPreset = (preset) => {
+		setVideoCode(preset.videoCode);
+		setStartMinutes(preset.startMinutes);
+		setStartSeconds(preset.startSeconds);
+		setEndMinutes(preset.endMinutes);
+		setEndSeconds(preset.endSeconds);
+		handleSpeedChange(preset.speed);
+	};
+
+	const secondsToHMSTuple = (totalSeconds) => {
+		const minutes = Math.floor(totalSeconds / 60);
+		const seconds = Math.floor(totalSeconds % 60);
+		return { minutes, seconds };
 	};
 
 	const opts = {
@@ -107,9 +202,16 @@ function App() {
 		},
 	};
 
+	const loopStartTime = HMSToSeconds(0, startMinutes, startSeconds);
+	const loopEndTime = HMSToSeconds(0, endMinutes, endSeconds);
+
 	return (
 		<>
-			<h1 className="mb-4">Music Looper Learner!</h1>
+			<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+				<h1 className="mb-0">Music Looper Learner!</h1>
+				<DarkModeToggle />
+			</div>
+
 			<Container style={{ maxWidth: '800px' }} className="mb-2">
 				<Form className="d-flex gap-3 align-items-center">
 					<Form.Control style={{ flexGrow: 1 }} size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange} />
@@ -128,6 +230,8 @@ function App() {
 				<YouTube videoId={videoCode} opts={opts} onReady={onReady} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} />
 			</div>
 
+			<Timeline currentTime={currentTime} duration={endTime} startTime={loopStartTime} endTime={loopEndTime} playerRef={player} />
+
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 
 			<LoopControls
@@ -142,14 +246,18 @@ function App() {
 				setEndMinutes={setEndMinutes}
 				setEndSeconds={setEndSeconds}
 				toggleLoop={toggleLoop}
-				setToggleLoop={setToggleLoop}
+				isLoopedOnce={isLoopedOnce}
+				setIsLoopedOnce={setIsLoopedOnce}
 				endTime={endTime}
 				videoCode={videoCode}
+				onToggleLoop={handleToggleLoop}
+				onLoopOnce={handleLoopOnce}
+				onStopLoopOnce={handleStopLoopOnce}
 			/>
 
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<Col xs="auto">
-					<SpeedControls playerRef={player} />
+					<SpeedControls playerRef={player} onSpeedChange={handleSpeedChange} activeSpeed={playbackSpeed} />
 				</Col>
 				<Col xs="auto">
 					<ShiftLoopControls
@@ -165,6 +273,27 @@ function App() {
 					/>
 				</Col>
 			</Row>
+
+			<LoopPresets
+				videoCode={videoCode}
+				startMinutes={startMinutes}
+				startSeconds={startSeconds}
+				endMinutes={endMinutes}
+				endSeconds={endSeconds}
+				speed={playbackSpeed}
+				onLoadPreset={handleLoadPreset}
+			/>
+
+			<div className="shortcuts-help">
+				<strong>Keyboard Shortcuts:</strong>
+				<br />
+				<kbd>←</kbd> / <kbd>→</kbd> Seek -5s / +5s &nbsp;
+				<kbd>Shift</kbd>+<kbd>←</kbd> / <kbd>Shift</kbd>+<kbd>→</kbd> Seek -1f / +1f &nbsp;
+				<kbd>L</kbd> Toggle loop &nbsp;
+				<kbd>1</kbd> Loop once &nbsp;
+				<kbd>S</kbd> Set start &nbsp;
+				<kbd>E</kbd> Set end
+			</div>
 		</>
 	);
 }

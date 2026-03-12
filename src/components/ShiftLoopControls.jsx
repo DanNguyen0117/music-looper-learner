@@ -1,8 +1,6 @@
 import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { secondsToHMS, secondsToHMSTuple, HMSToSeconds, roundToNearest05 } from '../utils/secondsToHMS';
+import { secondsToHMSTuple, HMSToSeconds, roundToNearest05 } from '../utils/secondsToHMS';
 import { faLeftLong, faRightLong } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './LoopControls.css';

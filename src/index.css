@@ -1,5 +1,29 @@
 @import "bootstrap/dist/css/bootstrap.css";
 
+:root {
+  --bg-color: #ffffff;
+  --text-color: #212529;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #f8f9fa;
+  --input-bg: #ffffff;
+  --timeline-track: #e9ecef;
+  --timeline-loop: rgba(13, 110, 253, 0.3);
+  --timeline-playhead: #0d6efd;
+}
+
+[data-theme="dark"] {
+  --bg-color: #212529;
+  --text-color: #f8f9fa;
+  --text-muted: #adb5bd;
+  --border-color: #495057;
+  --card-bg: #2b3035;
+  --input-bg: #343a40;
+  --timeline-track: #495057;
+  --timeline-loop: rgba(13, 110, 253, 0.4);
+  --timeline-playhead: #0d6efd;
+}
+
 * {
   font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
@@ -18,47 +42,182 @@ body {
   justify-content: space-around;
   min-width: 100vw;
   min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.title {
-  font-size: 3.5em;
-  line-height: 1.1;
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+.error-msg {
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc3545;
 }
 
 .help-text {
   font-size: 13px;
   font-weight: 600;
-  color: rgb(113, 113, 113);
+  color: var(--text-muted);
 }
 
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.form-control {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.form-control:focus {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.btn-check:focus + .btn, .btn:focus {
+  box-shadow: none;
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #5c636a;
+  border-color: #5c636a;
+}
+
+[data-theme="dark"] .btn-success {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+[data-theme="dark"] .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+[data-theme="dark"] .form-select {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Timeline styles */
+.timeline-container {
+  width: 100%;
+  max-width: 990px;
+  margin: 0 auto 20px;
+  padding: 0 10px;
+}
+
+.timeline-track {
+  position: relative;
+  height: 24px;
+  background-color: #e9ecef;
+  border-radius: 4px;
   cursor: pointer;
-  transition: border-color 0.25s;
+  overflow: hidden;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
 
-/* @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
+.timeline-loop-region {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: #0d6efd;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: rgba(13, 110, 253, 0.25);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: #dc3545;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.timeline-playhead {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  background-color: white;
+  border: 2px solid var(--timeline-playhead);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.timeline-playhead:active {
+  cursor: grabbing;
+}
+
+.timeline-time-display {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Keyboard shortcuts help */
+.shortcuts-help {
+  font-size: 12px;
+  color: var(--text-color);
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.shortcuts-help kbd {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #212529;
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+  background: none;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.dark-mode-toggle:hover {
+  background-color: var(--card-bg);
+}
