@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { secondsToHMS } from '../utils/secondsToHMS';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 const PRESETS_KEY = 'music-looper-presets';
 
@@ -58,6 +60,12 @@ function LoopPresets({
     }
   };
 
+  const clearAllPresets = () => {
+    setPresets([]);
+    localStorage.removeItem(PRESETS_KEY);
+    setSelectedPreset('');
+  };
+
   return (
     <Container className="mb-4" style={{ maxWidth: '700px' }}>
       <Row className="justify-content-center g-2 mb-3">
@@ -66,6 +74,13 @@ function LoopPresets({
             Save Current Loop
           </Button>
         </Col>
+        {presets.length > 0 && (
+          <Col xs="auto">
+            <Button variant="secondary" onClick={clearAllPresets} title="Clear all saved loops">
+              <FontAwesomeIcon icon={faTrashCan} />
+            </Button>
+          </Col>
+        )}
       </Row>
       {presets.length > 0 && (
         <Row className="justify-content-center g-1">

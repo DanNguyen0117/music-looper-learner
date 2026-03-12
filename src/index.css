@@ -23,7 +23,7 @@
   --timeline-track: #495057;
   --timeline-loop: rgba(13, 110, 253, 0.6);
   --timeline-playhead: #0d6efd;
-  --timeline-loop-border: #4dabf7;
+  --timeline-loop-border: #301dfc;
 }
 
 * {
@@ -145,6 +145,7 @@ h1 {
   border: 2px dashed var(--timeline-loop-border);
   pointer-events: none;
   box-sizing: border-box;
+  box-shadow: 0 0 3px var(--timeline-loop-border);
 }
 
 .timeline-progress {
@@ -323,7 +324,33 @@ h1 {
   padding: 16px 20px;
 }
 
+/* Speed controls grouping */
+.speed-controls-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.speed-divider {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0;
+}
+
 /* Action buttons row */
 .loop-actions-row .btn-pushable {
   margin: 0 10px;
+}
+
+/* Mobile adjustments for speed controls */
+@media (max-width: 480px) {
+  .speed-controls-group {
+    gap: 4px;
+  }
+
+  .speed-divider {
+    font-size: 14px;
+  }
 }

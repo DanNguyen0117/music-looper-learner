@@ -122,11 +122,11 @@ function ShiftLoopControls({
 					<Button onClick={handleHalfLoop}>
 						1/2x
 					</Button>
-					<div className="help-text">Half</div>
+					<div className="help-text">½ Loop</div>
 				</div>
 				<div className="ms-2">
 					<Button onClick={handleDoubleLoop}>2x</Button>
-					<div className="help-text">Double</div>
+					<div className="help-text">2x Loop</div>
 				</div>
 			</Container>
 		</>

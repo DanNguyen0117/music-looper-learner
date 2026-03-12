@@ -41,19 +41,19 @@ function PlaybackControls({ isPlaying, setIsPlaying, playerRef }) {
   return (
     <Container className="mb-3 d-flex flex-wrap justify-content-center">
       <div className="text-center me-3">
-        <Button variant="dark" className="playback" onClick={handleBackward}>
+        <Button variant="secondary" className="playback" onClick={handleBackward}>
           <FontAwesomeIcon icon={faBackward} />
         </Button>
         <div className="help-text">-5s</div>
       </div>
       <div className="text-center me-3">
-        <Button variant="dark" className="playback" onClick={handlePlayPause}>
+        <Button variant="secondary" className="playback" onClick={handlePlayPause}>
           <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
         </Button>
         <div className="help-text">{isPlaying ? 'Pause' : 'Play'}</div>
       </div>
       <div className="text-center">
-        <Button variant="dark" className="playback" onClick={handleForward}>
+        <Button variant="secondary" className="playback" onClick={handleForward}>
           <FontAwesomeIcon icon={faForward} />
         </Button>
         <div className="help-text">+5s</div>
