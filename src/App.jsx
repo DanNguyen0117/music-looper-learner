@@ -216,7 +216,7 @@ function App() {
 				<Form className="d-flex gap-3 align-items-center">
 					<Form.Control style={{ flexGrow: 1 }} size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange} />
 					<Button variant="success" type="button" onClick={handleYoutubeSubmit}>
-						Upload
+						Load
 					</Button>
 					<Button variant="primary" style={{ whiteSpace: 'nowrap' }} type="button" onClick={handleSampleVideo}>
 						{sampleVideoIndex === 0 ? 'Try Sample Video' : 'Try Another Video'}

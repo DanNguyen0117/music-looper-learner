@@ -315,6 +315,14 @@ h1 {
   border: 1px solid var(--border-color);
 }
 
+/* Time column grouping */
+.time-column-group {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
 /* Action buttons row */
 .loop-actions-row .btn-pushable {
   margin: 0 10px;

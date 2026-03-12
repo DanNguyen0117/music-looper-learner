@@ -50,23 +50,24 @@ function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTi
 
 	return (
 		<Col xs="auto">
-			<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>{label}</div>
+			<div className="time-column-group">
+				<div className="mb-2" style={{ fontSize: '20px', fontWeight: '700' }}>{label}</div>
 
-			<div className="time-display mb-2" style={{ fontSize: '18px', fontFamily: 'monospace', fontWeight: '600' }}>
-				{isStart ? (
-					<>
-						<span>Current: {formatTimeDecimal(currentTime)}</span>
-					</>
-				) : (
-					<>
-						<span>Loop: {formatTimeDecimal(loopDuration)}</span>
-					</>
-				)}
-			</div>
+				<div className="time-display mb-2" style={{ fontSize: '18px', fontFamily: 'monospace', fontWeight: '600' }}>
+					{isStart ? (
+						<>
+							<span>Current: {formatTimeDecimal(currentTime)}</span>
+						</>
+					) : (
+						<>
+							<span>Loop Duration: {formatTimeDecimal(loopDuration)}</span>
+						</>
+					)}
+				</div>
 
-			<div className="mb-3 d-flex align-items-center justify-content-center gap-1">
-				<div>
-					<Form.Control type="text" value={minutes} onChange={handleMinutes} style={{ width: '45px', textAlign: 'right' }} />
+				<div className="mb-3 d-flex align-items-center justify-content-center gap-1">
+					<div>
+						<Form.Control type="text" value={minutes} onChange={handleMinutes} style={{ width: '45px', textAlign: 'right' }} />
 					<div className="help-text">min</div>
 				</div>
 				<div className="mb-4">:</div>
@@ -99,6 +100,7 @@ function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTi
 					<div className="help-text">+1s</div>
 				</div>
 			</Container>
+			</div>
 		</Col>
 	);
 }
