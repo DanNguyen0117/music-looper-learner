@@ -275,7 +275,7 @@ h1 {
   max-width: 990px;
   margin: 0 auto 1rem;
   aspect-ratio: 45 / 10;
-  max-height: 60vh;
+  max-height: 70vh;
 }
 
 .video-container > div {
@@ -388,4 +388,36 @@ h1 {
   .speed-divider {
     font-size: 14px;
   }
+}
+
+/* Tooltip styling */
+.tooltip {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tooltip.show {
+  opacity: 1;
+}
+
+.tooltip-inner {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-arrow::before {
+  border-top-color: var(--card-bg) !important;
+  border-bottom-color: var(--card-bg) !important;
+}
+
+[data-theme="dark"] .tooltip-inner {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }

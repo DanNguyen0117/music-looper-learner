@@ -3,6 +3,7 @@ import { Button, Row, Col, Container } from 'react-bootstrap';
 import { secondsToHMS } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import TooltipButton from './TooltipButton';
 
 const PRESETS_KEY = 'music-looper-presets';
 
@@ -70,15 +71,15 @@ function LoopPresets({
     <Container className="mb-4" style={{ maxWidth: '700px' }}>
       <Row className="justify-content-center g-2 mb-3">
         <Col xs="auto">
-          <Button variant="success" onClick={savePreset}>
+          <TooltipButton variant="success" onClick={savePreset} tooltip="Save current loop settings">
             Save Current Loop
-          </Button>
+          </TooltipButton>
         </Col>
         {presets.length > 0 && (
           <Col xs="auto">
-            <Button variant="secondary" onClick={clearAllPresets} title="Clear all saved loops">
+            <TooltipButton variant="secondary" onClick={clearAllPresets} tooltip="Clear all saved loops">
               <FontAwesomeIcon icon={faTrashCan} />
-            </Button>
+            </TooltipButton>
           </Col>
         )}
       </Row>
@@ -86,10 +87,11 @@ function LoopPresets({
         <Row className="justify-content-center g-1">
           {presets.map((preset) => (
             <Col xs="auto" key={preset.id}>
-              <Button
+              <TooltipButton
                 variant={selectedPreset === preset.id ? 'primary' : 'outline-secondary'}
                 size="sm"
                 onClick={() => loadPreset(preset)}
+                tooltip={`Load preset: ${preset.name}`}
                 style={{ fontSize: '11px', padding: '4px 8px' }}
               >
                 {preset.name}
@@ -103,11 +105,10 @@ function LoopPresets({
                     cursor: 'pointer',
                     opacity: 0.7,
                   }}
-                  title="Delete preset"
                 >
                   ×
                 </span>
-              </Button>
+              </TooltipButton>
             </Col>
           ))}
         </Row>

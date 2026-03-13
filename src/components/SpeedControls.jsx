@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import TooltipButton from './TooltipButton';
 
 function SpeedControls({ playerRef, onSpeedChange, activeSpeed }) {
   const slowSpeeds = ['0.25', '0.5', '0.75'];
@@ -20,37 +21,40 @@ function SpeedControls({ playerRef, onSpeedChange, activeSpeed }) {
       <div className="mb-4 speed-controls-group">
         <ButtonGroup>
           {slowSpeeds.map((label) => (
-            <Button
+            <TooltipButton
               key={label}
               variant={activeSpeed === Number(label) ? 'primary' : 'secondary'}
               onClick={() => handleClick(label)}
+              tooltip={`Set playback speed to ${label}x`}
             >
               {label}
-            </Button>
+            </TooltipButton>
           ))}
         </ButtonGroup>
         <span className="speed-divider">|</span>
         <ButtonGroup>
           {normalSpeed.map((label) => (
-            <Button
+            <TooltipButton
               key={label}
               variant={activeSpeed === Number(label) ? 'primary' : 'secondary'}
               onClick={() => handleClick(label)}
+              tooltip="Set playback speed to normal (1x)"
             >
               {label}
-            </Button>
+            </TooltipButton>
           ))}
         </ButtonGroup>
         <span className="speed-divider">|</span>
         <ButtonGroup>
           {fastSpeeds.map((label) => (
-            <Button
+            <TooltipButton
               key={label}
               variant={activeSpeed === Number(label) ? 'primary' : 'secondary'}
               onClick={() => handleClick(label)}
+              tooltip={`Set playback speed to ${label}x`}
             >
               {label}
-            </Button>
+            </TooltipButton>
           ))}
         </ButtonGroup>
       </div>

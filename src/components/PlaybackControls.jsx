@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faBackward, faForward } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import TooltipButton from './TooltipButton';
 import './PlaybackControls.css';
 
 // const buttons = [
@@ -41,21 +42,21 @@ function PlaybackControls({ isPlaying, setIsPlaying, playerRef }) {
   return (
     <Container className="mb-3 d-flex flex-wrap justify-content-center">
       <div className="text-center me-3">
-        <Button variant="secondary" className="playback" onClick={handleBackward}>
+        <TooltipButton variant="secondary" className="playback" onClick={handleBackward} tooltip="Go back 5 seconds">
           <FontAwesomeIcon icon={faBackward} />
-        </Button>
+        </TooltipButton>
         <div className="help-text">-5s</div>
       </div>
       <div className="text-center me-3">
-        <Button variant="secondary" className="playback" onClick={handlePlayPause}>
+        <TooltipButton variant="secondary" className="playback" onClick={handlePlayPause} tooltip={isPlaying ? "Pause video" : "Play video"}>
           <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
-        </Button>
+        </TooltipButton>
         <div className="help-text">{isPlaying ? 'Pause' : 'Play'}</div>
       </div>
       <div className="text-center">
-        <Button variant="secondary" className="playback" onClick={handleForward}>
+        <TooltipButton variant="secondary" className="playback" onClick={handleForward} tooltip="Go forward 5 seconds">
           <FontAwesomeIcon icon={faForward} />
-        </Button>
+        </TooltipButton>
         <div className="help-text">+5s</div>
       </div>
     </Container>

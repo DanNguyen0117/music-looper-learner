@@ -3,6 +3,7 @@ import { Col, Container, Form, Row, Button } from 'react-bootstrap';
 import { secondsToHMS, secondsToHMSTuple, HMSToSeconds, roundToNearest05 } from '../utils/secondsToHMS';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faAngleLeft, faAnglesLeft, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
+import TooltipButton from './TooltipButton';
 import './LoopControls.css';
 
 function formatTimeDecimal(seconds) {
@@ -11,7 +12,7 @@ function formatTimeDecimal(seconds) {
   return `${mins}:${secs.toFixed(2).padStart(5, '0')}`;
 }
 
-function ActionButton({ variant, onClick, disabled, children }) {
+function ActionButton({ variant, onClick, disabled, children, tooltip }) {
   const pushableProps = {
     onMouseDown: (e) => e.currentTarget.classList.add('is-pressed'),
     onMouseUp: (e) => e.currentTarget.classList.remove('is-pressed'),
@@ -21,16 +22,17 @@ function ActionButton({ variant, onClick, disabled, children }) {
   };
 
   return (
-    <Button
+    <TooltipButton
       className="btn-pushable"
       variant={variant}
       style={{ minWidth: '120px' }}
       onClick={onClick}
       disabled={disabled}
+      tooltip={tooltip}
       {...pushableProps}
     >
       <span className="btn-front">{children}</span>
-    </Button>
+    </TooltipButton>
   );
 }
 
@@ -80,23 +82,23 @@ function TimeColumn({ label, minutes, seconds, setMinutes, setSeconds, currentTi
 
 			<Container className="mb-3 d-flex flex-wrap justify-content-center gap-2">
 				<div>
-					<Button variant="secondary" onClick={() => onAdjust('-1s')}><FontAwesomeIcon icon={faAnglesLeft} /></Button>
+					<TooltipButton variant="secondary" onClick={() => onAdjust('-1s')} tooltip="Decrease by 1 second"><FontAwesomeIcon icon={faAnglesLeft} /></TooltipButton>
 					<div className="help-text">-1s</div>
 				</div>
 				<div>
-					<Button variant="secondary" onClick={() => onAdjust('-1f')}><FontAwesomeIcon icon={faAngleLeft} /></Button>
+					<TooltipButton variant="secondary" onClick={() => onAdjust('-1f')} tooltip="Decrease by 1 frame"><FontAwesomeIcon icon={faAngleLeft} /></TooltipButton>
 					<div className="help-text">-1f</div>
 				</div>
 				<div>
-					<Button variant="success" onClick={onSetTime}>{secondsToHMS(currentTime)}</Button>
+					<TooltipButton variant="success" onClick={onSetTime} tooltip="Set to current video time">{secondsToHMS(currentTime)}</TooltipButton>
 					<div className="help-text">Set Time</div>
 				</div>
 				<div>
-					<Button variant="secondary" onClick={() => onAdjust('+1f')}><FontAwesomeIcon icon={faAngleRight} /></Button>
+					<TooltipButton variant="secondary" onClick={() => onAdjust('+1f')} tooltip="Increase by 1 frame"><FontAwesomeIcon icon={faAngleRight} /></TooltipButton>
 					<div className="help-text">+1f</div>
 				</div>
 				<div>
-					<Button variant="secondary" onClick={() => onAdjust('+1s')}><FontAwesomeIcon icon={faAnglesRight} /></Button>
+					<TooltipButton variant="secondary" onClick={() => onAdjust('+1s')} tooltip="Increase by 1 second"><FontAwesomeIcon icon={faAnglesRight} /></TooltipButton>
 					<div className="help-text">+1s</div>
 				</div>
 			</Container>
@@ -160,7 +162,7 @@ export default function LoopControls({
 		setStartSeconds(0);
 		setEndMinutes(t.minutes);
 		setEndSeconds(t.seconds);
-	}, [videoCode, endTime]);
+	}, [videoCode, endTime, setStartMinutes, setStartSeconds, setEndMinutes, setEndSeconds]);
 
 	// Looping interval
 	useEffect(() => {
@@ -183,7 +185,7 @@ export default function LoopControls({
 		}, 50);
 
 		return () => clearInterval(interval);
-	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop, isLoopedOnce, setIsLoopedOnce]);
+	}, [startMinutes, startSeconds, endMinutes, endSeconds, toggleLoop, isLoopedOnce, setIsLoopedOnce, playerRef]);
 
 	// ── Shared set-time-from-player handler ─────────────────────────────────
 	const makeSetTimeHandler = (setMin, setSec) => () => {
@@ -213,6 +215,7 @@ export default function LoopControls({
 						variant={toggleLoop ? 'danger' : 'primary'}
 						onClick={onToggleLoop}
 						disabled={isLoopedOnce}
+						tooltip={toggleLoop ? "Stop continuous looping" : "Start continuous looping"}
 					>
 						{toggleLoop ? 'Stop Loop' : 'Start Loop'}
 					</ActionButton>
@@ -222,6 +225,7 @@ export default function LoopControls({
 						variant="success"
 						onClick={handleIsLoopedOnce}
 						disabled={toggleLoop}
+						tooltip={"Play one full loop then stop"}
 					>
 						{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
 					</ActionButton>

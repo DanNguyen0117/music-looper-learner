@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import PlaybackControls from './components/PlaybackControls';
 import LoopControls from './components/LoopControls';
 import SpeedControls from './components/SpeedControls';
@@ -6,6 +6,7 @@ import ShiftLoopControls from './components/ShiftLoopControls';
 import Timeline from './components/Timeline';
 import LoopPresets from './components/LoopPresets';
 import DarkModeToggle from './components/DarkModeToggle';
+import TooltipButton from './components/TooltipButton';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -103,9 +104,9 @@ function App() {
 
 		window.addEventListener('keydown', handleKeyDown);
 		return () => window.removeEventListener('keydown', handleKeyDown);
-	}, [startMinutes, startSeconds, endMinutes, endSeconds, endTime, toggleLoop]);
+	}, [startMinutes, startSeconds, endMinutes, endSeconds, endTime, toggleLoop, handleLoopOnce, handleToggleLoop]);
 
-	const handleToggleLoop = () => {
+	const handleToggleLoop = useCallback(() => {
 		const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
 		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
 		if (!player.current || startLoopTime > endTime || endLoopTime > endTime || startLoopTime >= endLoopTime) return;
@@ -117,9 +118,9 @@ function App() {
 		} else {
 			player.current.pauseVideo();
 		}
-	};
+	}, [startMinutes, startSeconds, endMinutes, endSeconds, endTime, toggleLoop]);
 
-	const handleLoopOnce = () => {
+	const handleLoopOnce = useCallback(() => {
 		const startLoopTime = HMSToSeconds(0, startMinutes, startSeconds);
 		const endLoopTime = HMSToSeconds(0, endMinutes, endSeconds);
 		if (!player.current || startLoopTime >= endLoopTime) return;
@@ -127,7 +128,7 @@ function App() {
 		setIsLoopedOnce(true);
 		player.current.seekTo(startLoopTime, true);
 		player.current.playVideo();
-	};
+	}, [startMinutes, startSeconds, endMinutes, endSeconds]);
 
 	const handleStopLoopOnce = () => {
 		setIsLoopedOnce(false);
@@ -229,12 +230,19 @@ function App() {
 			<Container style={{ maxWidth: '800px' }} className="mb-2">
 				<Form className="d-flex gap-3 align-items-center">
 					<Form.Control style={{ flexGrow: 1 }} size="normal" type="text" placeholder="Enter Youtube URL" onChange={handleURLChange} />
-					<Button variant="success" type="button" onClick={handleYoutubeSubmit}>
+					<TooltipButton variant="success" type="button" onClick={handleYoutubeSubmit} tooltip="Load video from URL" placement="bottom">
 						Load
-					</Button>
-					<Button variant="primary" style={{ whiteSpace: 'nowrap' }} type="button" onClick={handleSampleVideo}>
+					</TooltipButton>
+					<TooltipButton
+						variant="primary"
+						style={{ whiteSpace: 'nowrap' }}
+						type="button"
+						onClick={handleSampleVideo}
+						tooltip={sampleVideoIndex === 0 ? 'Load a sample video to try' : 'Load another sample video'}
+						placement="bottom"
+					>
 						{sampleVideoIndex === 0 ? 'Try Sample Video' : 'Try Another Video'}
-					</Button>
+					</TooltipButton>
 				</Form>
 			</Container>
 
@@ -256,16 +264,16 @@ function App() {
 
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
 			<ShiftLoopControls
-						startMinutes={startMinutes}
-						startSeconds={startSeconds}
-						setStartMinutes={setStartMinutes}
-						setStartSeconds={setStartSeconds}
-						endMinutes={endMinutes}
-						endSeconds={endSeconds}
-						setEndMinutes={setEndMinutes}
-						setEndSeconds={setEndSeconds}
-						endTime={endTime}
-					/>
+				startMinutes={startMinutes}
+				startSeconds={startSeconds}
+				setStartMinutes={setStartMinutes}
+				setStartSeconds={setStartSeconds}
+				endMinutes={endMinutes}
+				endSeconds={endSeconds}
+				setEndMinutes={setEndMinutes}
+				setEndSeconds={setEndSeconds}
+				endTime={endTime}
+			/>
 
 			<LoopControls
 				currentTime={currentTime}
@@ -321,7 +329,7 @@ function App() {
 				<strong>Keyboard Shortcuts:</strong>
 				<br />
 				<kbd>←</kbd> / <kbd>→</kbd> Seek -5s / +5s &nbsp;
-				<kbd>{"["}</kbd> / <kbd>{"]"}</kbd> Seek -1f / +1f &nbsp;
+				<kbd>{'['}</kbd> / <kbd>{']'}</kbd> Seek -1f / +1f &nbsp;
 				<kbd>L</kbd> Toggle loop &nbsp;
 				<kbd>1</kbd> Loop once &nbsp;
 				<kbd>S</kbd> Set start &nbsp;
