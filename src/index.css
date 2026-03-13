@@ -122,8 +122,8 @@ h1 {
 .timeline-container {
   width: 100%;
   max-width: 990px;
-  margin: 0 auto 20px;
-  padding: 0 10px;
+  margin: 0 auto 0px;
+  padding: 12px 10px;
   overflow-x: hidden;
 }
 
@@ -179,10 +179,23 @@ h1 {
   cursor: grab;
   z-index: 2;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  touch-action: none;
 }
 
 .timeline-playhead:active {
   cursor: grabbing;
+}
+
+.timeline-handle-start {
+  background-color: #fff;
+  border-color: #00e673 !important;
+  box-shadow: 0 0 6px #00e673, 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.timeline-handle-end {
+  background-color: #fff;
+  border-color: #ff3333 !important;
+  box-shadow: 0 0 6px #ff3333, 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .timeline-time-display {
@@ -192,6 +205,28 @@ h1 {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
+}
+
+/* Mobile Timeline */
+@media (max-width: 768px) {
+  .timeline-container {
+    padding: 16px 12px;
+  }
+
+  .timeline-track {
+    height: 40px;
+    border-radius: 6px;
+  }
+
+  .timeline-playhead {
+    width: 20px;
+    height: 20px;
+  }
+
+  .timeline-time-display {
+    font-size: 15px;
+    margin-top: 12px;
+  }
 }
 
 /* Keyboard shortcuts help */

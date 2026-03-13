@@ -102,9 +102,9 @@ function ShiftLoopControls({
 
 	return (
 		<>
-			<div className="mb-2" style={{ fontSize: '20px', fontWeight: '600' }}>
+			{/* <div className="mb-2" style={{ fontSize: '20px', fontWeight: '600' }}>
 				Move Loop
-			</div>
+			</div> */}
 			<Container className="mb-3 d-flex flex-wrap justify-content-center">
 				<div className="ms-2">
 					<Button onClick={handleLeftShiftLoop}>

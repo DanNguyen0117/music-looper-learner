@@ -207,6 +207,26 @@ export default function LoopControls({
 
 	return (
 		<div className="loop-controls">
+			<Row className="mt-5 mb-4 justify-content-center">
+				<Col xs="auto">
+					<ActionButton
+						variant={toggleLoop ? 'danger' : 'primary'}
+						onClick={onToggleLoop}
+						disabled={isLoopedOnce}
+					>
+						{toggleLoop ? 'Stop Loop' : 'Start Loop'}
+					</ActionButton>
+				</Col>
+				<Col xs="auto">
+					<ActionButton
+						variant="success"
+						onClick={handleIsLoopedOnce}
+						disabled={toggleLoop}
+					>
+						{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
+					</ActionButton>
+				</Col>
+			</Row>
 			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<TimeColumn
 					label="Loop Start"
@@ -233,27 +253,6 @@ export default function LoopControls({
 					loopDuration={loopDuration}
 					isStart={false}
 				/>
-			</Row>
-
-			<Row className="mb-4 justify-content-center">
-				<Col xs="auto">
-					<ActionButton
-						variant={toggleLoop ? 'danger' : 'primary'}
-						onClick={onToggleLoop}
-						disabled={isLoopedOnce}
-					>
-						{toggleLoop ? 'Stop Loop' : 'Start Loop'}
-					</ActionButton>
-				</Col>
-				<Col xs="auto">
-					<ActionButton
-						variant="success"
-						onClick={handleIsLoopedOnce}
-						disabled={toggleLoop}
-					>
-						{isLoopedOnce ? 'Stop Loop' : 'Loop Once'}
-					</ActionButton>
-				</Col>
 			</Row>
 		</div>
 	);

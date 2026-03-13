@@ -55,19 +55,19 @@ function App() {
 			switch (e.key) {
 				case 'ArrowLeft':
 					e.preventDefault();
-					if (e.shiftKey) {
-						player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 0.05), true);
-					} else {
-						player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 5), true);
-					}
+					player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 5), true);
 					break;
 				case 'ArrowRight':
 					e.preventDefault();
-					if (e.shiftKey) {
-						player.current.seekTo(player.current.getCurrentTime() + 0.05, true);
-					} else {
-						player.current.seekTo(player.current.getCurrentTime() + 5, true);
-					}
+					player.current.seekTo(player.current.getCurrentTime() + 5, true);
+					break;
+				case '[':
+					e.preventDefault();
+					player.current.seekTo(Math.max(0, player.current.getCurrentTime() - 0.05), true);
+					break;
+				case ']':
+					e.preventDefault();
+					player.current.seekTo(player.current.getCurrentTime() + 0.05, true);
 					break;
 				case 'l':
 				case 'L':
@@ -178,6 +178,20 @@ function App() {
 		player.current?.setPlaybackRate(speed);
 	};
 
+	const handleSeek = (timestamp) => {
+		player.current?.seekTo(timestamp, true);
+	};
+
+	const handleLoopStartChange = (newStart) => {
+		setStartMinutes(Math.floor(newStart / 60));
+		setStartSeconds(newStart % 60);
+	};
+
+	const handleLoopEndChange = (newEnd) => {
+		setEndMinutes(Math.floor(newEnd / 60));
+		setEndSeconds(newEnd % 60);
+	};
+
 	const handleLoadPreset = (preset) => {
 		setVideoCode(preset.videoCode);
 		setStartMinutes(preset.startMinutes);
@@ -230,9 +244,28 @@ function App() {
 				<YouTube videoId={videoCode} opts={opts} onReady={onReady} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} />
 			</div>
 
-			<Timeline currentTime={currentTime} duration={endTime} startTime={loopStartTime} endTime={loopEndTime} playerRef={player} />
+			<Timeline
+				duration={endTime}
+				currentTime={currentTime}
+				startTime={loopStartTime}
+				endTime={loopEndTime}
+				onLoopStartChange={handleLoopStartChange}
+				onLoopEndChange={handleLoopEndChange}
+				onSeek={handleSeek}
+			/>
 
 			<PlaybackControls isPlaying={isPlaying} setIsPlaying={setIsPlaying} playerRef={player} />
+			<ShiftLoopControls
+						startMinutes={startMinutes}
+						startSeconds={startSeconds}
+						setStartMinutes={setStartMinutes}
+						setStartSeconds={setStartSeconds}
+						endMinutes={endMinutes}
+						endSeconds={endSeconds}
+						setEndMinutes={setEndMinutes}
+						setEndSeconds={setEndSeconds}
+						endTime={endTime}
+					/>
 
 			<LoopControls
 				currentTime={currentTime}
@@ -254,8 +287,8 @@ function App() {
 				onLoopOnce={handleLoopOnce}
 				onStopLoopOnce={handleStopLoopOnce}
 			/>
-
-			<Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
+			<SpeedControls playerRef={player} onSpeedChange={handleSpeedChange} activeSpeed={playbackSpeed} />
+			{/* <Row className="mb-4 justify-content-center" style={{ gap: '40px', flexWrap: 'wrap' }}>
 				<Col xs="auto">
 					<SpeedControls playerRef={player} onSpeedChange={handleSpeedChange} activeSpeed={playbackSpeed} />
 				</Col>
@@ -272,7 +305,7 @@ function App() {
 						endTime={endTime}
 					/>
 				</Col>
-			</Row>
+			</Row> */}
 
 			<LoopPresets
 				videoCode={videoCode}
@@ -288,7 +321,7 @@ function App() {
 				<strong>Keyboard Shortcuts:</strong>
 				<br />
 				<kbd>←</kbd> / <kbd>→</kbd> Seek -5s / +5s &nbsp;
-				<kbd>Shift</kbd>+<kbd>←</kbd> / <kbd>Shift</kbd>+<kbd>→</kbd> Seek -1f / +1f &nbsp;
+				<kbd>{"["}</kbd> / <kbd>{"]"}</kbd> Seek -1f / +1f &nbsp;
 				<kbd>L</kbd> Toggle loop &nbsp;
 				<kbd>1</kbd> Loop once &nbsp;
 				<kbd>S</kbd> Set start &nbsp;

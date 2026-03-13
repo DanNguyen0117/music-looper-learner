@@ -17,7 +17,7 @@ function SpeedControls({ playerRef, onSpeedChange, activeSpeed }) {
       <div className="mb-2" style={{ fontSize: '20px', fontWeight: '600' }}>
         Playback Speed: {activeSpeed}x
       </div>
-      <div className="speed-controls-group">
+      <div className="mb-4 speed-controls-group">
         <ButtonGroup>
           {slowSpeeds.map((label) => (
             <Button
