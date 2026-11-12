@@ -16,6 +16,7 @@ import Container from 'react-bootstrap/Container';
 import './App.css';
 import YouTube from 'react-youtube';
 import { HMSToSeconds, roundToNearest05 } from './utils/secondsToHMS';
+import { faWordpressSimple } from '@fortawesome/free-brands-svg-icons';
 
 const sampleVideos = ['4RaR210hglo', 'ngFdSR_aqdI', 'WNcsUNKlAKw', 'aeB43h2SiTM', 'wCINvavqFXk'];
 
